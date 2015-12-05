@@ -6,11 +6,12 @@
 doctype html
 html(ng-app='app')
     head
+        base(href='/')
+        link(rel='icon', href='/images/favicon.png')
+        link(rel='stylesheet', type='text/css', href='/main.css')
         title
             block title
                 | Untitled
-        base(href='/')
-        link(rel='stylesheet', type='text/css', href='/main.css')
 
     body
         block content
@@ -19,3 +20,4 @@ html(ng-app='app')
         block scripts
             script(src='https://code.jquery.com/jquery-2.1.4.min.js')
             script(src='/client.js')
+

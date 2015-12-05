@@ -26,6 +26,13 @@ module.exports = (grunt)->
                     dest:   './dist/'
                     ext:    '.coffee'
                 ]
+            assets:
+                files: [
+                    expand: true
+                    cwd:    './src/assets/'
+                    src:    '**/*'
+                    dest:   './dist/static'
+                ]
 
         clean:
             dist: ['./dist']
