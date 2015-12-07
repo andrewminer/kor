@@ -1,0 +1,39 @@
+{
+    "background": "#000000",
+    "plan": [
+        "╔┰┎┰┎┰┎┰┰┒┰┒┰┒┰╗",
+        "├..............┤",
+        "┌..............┐",
+        "├..............┤",
+        "┌..............┐",
+        "├..............┤",
+        "├..............┤",
+        "└..............┘",
+        "├..............┤",
+        "└..............┘",
+        "├..............┤",
+        "╚┸┖┸┖┸┖┸┸┚┸┚┸┚┸╝"
+    ],
+    "blockImages": {
+        "╗": "wall-corner-ne-lavender",
+        "╔": "wall-corner-nw-lavender",
+        "╝": "wall-corner-se-lavender",
+        "╚": "wall-corner-sw-lavender",
+        "┤": "wall-side-e-lavender",
+        "┐": "wall-side-en-lavender",
+        "┘": "wall-side-es-lavender",
+        "┒": "wall-side-ne-lavender",
+        "┰": "wall-side-n-lavender",
+        "┎": "wall-side-nw-lavender",
+        "┚": "wall-side-se-lavender",
+        "┸": "wall-side-s-lavender",
+        "┖": "wall-side-sw-lavender",
+        "├": "wall-side-w-lavender",
+        "┌": "wall-side-wn-lavender",
+        "└": "wall-side-ws-lavender"
+    },
+    "tileImages": {
+        ".": "floor-tile-lavender"
+    },
+    "spawn": { "x":8.5, "y":6.5 }
+}

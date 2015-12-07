@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 by Redwood Labs
+# Copyright © 2015 by Redwood Labs
 # All rights reserved.
 #
 
@@ -31,10 +31,11 @@ module.exports = (grunt)->
                     expand: true
                     cwd:    './src/assets/'
                     src:    '**/*'
-                    dest:   './dist/static'
+                    dest:   './dist/static/'
                 ]
 
         clean:
+            assets: ['./dist/static/data', './dist/static/images']
             dist: ['./dist']
             templates: ['./src/client/templates.js']
 
@@ -64,9 +65,12 @@ module.exports = (grunt)->
         sass:
             all:
                 files:
-                    './dist/static/main.css': ['./src/**/*.scss']
+                    './dist/static/main.css': ['./src/client/styles/main.scss']
 
         watch:
+            assets:
+                files: ['./src/assets/**/*']
+                tasks: ['copy:assets']
             client_source:
                 files: ['./src/{client,common}/**/*.coffee']
                 tasks: ['browserify']

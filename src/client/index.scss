@@ -1,0 +1,23 @@
+//
+// Copyright © 2015 by Redwood Labs
+// All rights reserved.
+//
+
+html {
+    position: fixed; height: 100%; width: 100%;
+
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        height: 100%;
+
+        .game-screen {
+            display: flex;
+
+            flex: 1 1 100%;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}

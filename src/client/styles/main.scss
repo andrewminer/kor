@@ -1,7 +1,7 @@
-/*
- * Copyright (C) 2015 by Redwood Labs
- * All rights reserved.
- */
+//
+// Copyright © 2015 by Redwood Labs
+// All rights reserved.
+//
 
 // normalize all values
 @import 'reset';
@@ -11,10 +11,8 @@
 @import 'fonts';
 
 // define globals styles
-@import 'angular';
 @import 'classes';
 @import 'tags';
 
 // define page/template-specific styles
-@import 'pages/main';
-@import 'templates/main';
+@import '../index.scss';

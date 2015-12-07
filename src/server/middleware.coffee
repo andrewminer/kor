@@ -1,10 +1,9 @@
 #
-# Copyright (C) 2015 by Redwood Labs
+# Copyright © 2015 by Redwood Labs
 # All rights reserved.
 #
 
 bodyParser     = require 'body-parser'
-constants      = require './constants'
 clientSessions = require 'client-sessions'
 express        = require 'express'
 w              = require 'when'
