@@ -40,6 +40,7 @@ exports.speed = {}
 exports.speed.slow   = 1000
 exports.speed.normal = exports.speed.slow / 2
 exports.speed.fast   = exports.speed.normal / 2
+exports.speed.block  = 75
 
 exports.tile = {}
 exports.tile.width = 64

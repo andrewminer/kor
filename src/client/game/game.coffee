@@ -40,7 +40,7 @@ module.exports = class Game extends EventEmitter
         @_keyboard.startListening()
         @_runLoopId = setInterval (=> @dispatchKeyboardEvents(@_keyboard)), c.animation.frameDuration
 
-        @pushWorld name:'sol-3-station-1', transition:in:c.transition.openDoors
+        @pushWorld name:'cargo_shuttle', transition:in:c.transition.openDoors
             .done => @resume()
 
         @emit c.event.game.begin
