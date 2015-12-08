@@ -16,8 +16,8 @@ module.exports = class StaticEntityView extends View
 
     render: ->
         @imageView = @root.append 'image'
-            .attr('x', 0).attr('y', 0).attr('height', c.canvas.cellSize).attr('width', c.canvas.cellSize)
-            .attr 'transform', "translate(#{-c.canvas.cellSize / 2}, #{-c.canvas.cellSize / 2})"
+            .attr('x', 0).attr('y', 0).attr('height', c.tile.height).attr('width', c.tile.width)
+            .attr 'transform', "translate(#{-c.tile.width / 2}, #{-c.tile.height / 2})"
         super
 
     refresh: ->
@@ -26,5 +26,5 @@ module.exports = class StaticEntityView extends View
         if @model.variant? then imageBase.push @model.variant
         if @model.step? then imageBase.push @model.step
 
-        @imageView.attr 'xlink:href', "images/#{imageBase.join('-')}.png"
+        @imageView.attr 'xlink:href', "images/entities/#{imageBase.join('-')}.png"
         super

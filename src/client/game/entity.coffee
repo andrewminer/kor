@@ -72,7 +72,6 @@ module.exports = class Entity extends EventEmitter
     onGameStep: ->
         # subclasses may override to perform to activity each game tick, but they should be sure to call the super
         # class's implementation when finished.
-        @_stepAnimation()
 
     # Private Methods ##############################################################################
 

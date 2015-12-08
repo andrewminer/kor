@@ -7,7 +7,7 @@ Entity = require './entity'
 
 ########################################################################################################################
 
-module.exports = class StationaryEntity extends Entity
+module.exports = class StaticEntity extends Entity
 
     constructor: (x, y, data)->
         super x, y

@@ -12,16 +12,14 @@ EventEmitter   = require 'events'
 module.exports = class Room extends EventEmitter
 
     constructor: (@world, @x, @y)->
-        @blocks     = []
-        @background = "#FFFFFF"
-        @data       = null
-        @exits      = []
-        @entities   = []
-        @images     = []
-        @spawn      = null
-        @tiles      = []
-
-        Object.defineProperty this, 'key', get:@getKey, set:@setKey
+        @blocks          = []
+        @backgroundColor = "#000000"
+        @data            = null
+        @exits           = []
+        @entities        = []
+        @images          = []
+        @spawn           = null
+        @tiles           = []
 
     # Class Methods ################################################################################
 
@@ -72,51 +70,71 @@ module.exports = class Room extends EventEmitter
 
     # Property Methods ############################################################################
 
-    getKey: ->
-        return Room.key @world.name, @x, @y
-
-    setKey: (v)->
-        throw new Error 'key is read-only'
+    Object.defineProperties @prototype,
+        key:
+            get: -> return Room.key @world.name, @x, @y
 
     # Private Methods ##############################################################################
 
+    _createEntity: (entityData)->
+        Entity = entityRegistry[entityData.type]?.model
+        if Entity
+            entity = new Entity entityData.x, entityData.y, entityData
+            entity.game = @game
+            @entities.push entity
+        else
+            console.error "invalid entity type: #{entityData.type} in #{@key}"
+
+    _unpackBackground: (data)->
+        if data.background?.color?
+            @backgroundColor = data.background.color
+
     _unpackData: (data)->
-        @data = data
+        @data     = data
+        @entities = []
+        @tiles    = []
+        @blocks   = []
 
-        @background  = data.background  if data.background?
-        @blockImages = data.blockImages if data.blockImages?
-        @exits       = data.exits       if data.exits?
-        @plan        = data.plan        if data.plan?
-        @spawn       = data.spawn       if data.spawn?
-        @tileImages  = data.tileImages  if data.tileImages?
+        @_unpackBackground data
+        @_unpackEntities data
+        @_unpackExits data
+        @_unpackPlan data
+        @_unpackSpawn data
 
-        @blocks = []
-        @tiles = []
+    _unpackEntities: (data)->
+        return unless data.entities?
+
+        for entityData in data.entities
+            @_createEntity entityData
+
+    _unpackExits: (data)->
+        return unless data.exits?
+        @exits = data.exits
+
+    _unpackPlan: (data)->
+        return unless data.plan?
+
         for x in [0...c.room.width]
             for y in [0...c.room.height]
-                imageId = @data.plan?[y]?[x]
-                continue unless imageId?
-                continue if imageId is ' '
+                imageId = data.plan?[y]?[x]
 
-                image = @blockImages?[imageId]
-                if image?
-                    @blocks.push new Block x+1, y+1, image
+                if imageId? and imageId isnt ' '
+                    image = data.blocks?[imageId]
+                    if image?
+                        @blocks.push new Block x+1, y+1, image
+                        continue
+
+                    image = data.tiles?[imageId]
+                    if image?
+                        @tiles.push new Block x+1, y+1, image
+                        continue
+
+                if data.background?.entity?
+                    @_createEntity _.extend {}, {x:x+1, y:y+1}, data.background.entity
                     continue
 
-                image = @tileImages?[imageId]
-                if image?
-                    @tiles.push new Block x+1, y+1, image
-                    continue
+                console.error "invalid image id: \"#{imageId}\" in #{@key}"
 
-                console.error "invalid image id: \"#{imageId}\""
-
-        @entities = []
-        if data.entities
-            for entityData in data.entities
-                Entity = entityRegistry[entityData.type]?.model
-                if Entity
-                    entity = new Entity entityData.x, entityData.y, entityData
-                    entity.game = @game
-                    @entities.push entity
-                else
-                    console.error "invalid entity type: #{entityData.type} in #{@key}"
+    _unpackSpawn: (data)->
+        return unless data.spawn?
+        @spawn = data.spawn
