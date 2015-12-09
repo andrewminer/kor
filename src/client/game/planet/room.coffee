@@ -12,14 +12,15 @@ EventEmitter   = require 'events'
 module.exports = class Room extends EventEmitter
 
     constructor: (@world, @x, @y)->
-        @blocks          = []
-        @backgroundColor = "#000000"
-        @data            = null
-        @exits           = []
-        @entities        = []
-        @images          = []
-        @spawn           = null
-        @tiles           = []
+        @blocks             = []
+        @backgroundColor    = "#000000"
+        @backgroundEntities = []
+        @data               = null
+        @exits              = []
+        @entities           = []
+        @images             = []
+        @spawn              = null
+        @tiles              = []
 
     # Class Methods ################################################################################
 
@@ -81,9 +82,10 @@ module.exports = class Room extends EventEmitter
         if Entity
             entity = new Entity entityData.x, entityData.y, entityData
             entity.game = @game
-            @entities.push entity
         else
             console.error "invalid entity type: #{entityData.type} in #{@key}"
+
+        return entity
 
     _unpackBackground: (data)->
         if data.background?.color?
@@ -105,7 +107,7 @@ module.exports = class Room extends EventEmitter
         return unless data.entities?
 
         for entityData in data.entities
-            @_createEntity entityData
+            @entities.push @_createEntity entityData
 
     _unpackExits: (data)->
         return unless data.exits?
@@ -130,7 +132,7 @@ module.exports = class Room extends EventEmitter
                         continue
 
                 if data.background?.entity?
-                    @_createEntity _.extend {}, {x:x+1, y:y+1}, data.background.entity
+                    @backgroundEntities.push @_createEntity _.extend {}, {x:x+1, y:y+1}, data.background.entity
                     continue
 
                 console.error "invalid image id: \"#{imageId}\" in #{@key}"

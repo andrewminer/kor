@@ -7,6 +7,7 @@ EventEmitter = require 'events'
 Keyboard     = require './keyboard'
 Player       = require './planet/player'
 Room         = require './planet/room'
+SoundPlayer  = require './sounds'
 World        = require './planet/world'
 
 ########################################################################################################################
@@ -26,6 +27,7 @@ module.exports = class Game extends EventEmitter
         @_paused      = true
         @_player      = null
         @_transitions = null
+        @sounds       = new SoundPlayer
         @view         = null
         @_worldStack  = []
 

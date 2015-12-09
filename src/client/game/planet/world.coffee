@@ -14,13 +14,15 @@ module.exports = class World extends EventEmitter
         if not @game? then throw new Error 'game is required'
         if not @name? then throw new Error 'name is required'
 
-        @x          = 0
-        @y          = 0
-        @player     = null
-        @room       = null
-        @roomCache  = {}
-        @roomPath   = []
-        @transition = null
+        @ambientSound = null
+        @data         = null
+        @player       = null
+        @room         = null
+        @roomCache    = {}
+        @roomPath     = []
+        @transition   = null
+        @x            = 0
+        @y            = 0
 
     # Public Methods ###############################################################################
 
@@ -31,19 +33,35 @@ module.exports = class World extends EventEmitter
         @worldX    = 0
         @worldY    = 0
 
-        @room = new Room this, @x, @y
-        @room.game = @game
+        @load().then =>
+            if @ambientSound?
+                @game.sounds.startLoop @ambientSound
 
-        @roomCache[@room.key] = @room
-        @roomPath.push @room
+            @room = new Room this, @x, @y
+            @room.game = @game
 
-        @room.load()
-            .then =>
+            @roomCache[@room.key] = @room
+            @roomPath.push @room
+
+            @room.load().then =>
                 @room.spawn = spawn if spawn?
                 @room.enter player
 
+    load: ->
+        if @data? then return w(this)
+
+        w.promise (resolve, reject)=>
+            d3.json "data/#{@key}.json", (error, data)=>
+                if error?
+                    reject error
+                else
+                    @_unpackData data
+                    resolve this
+
     leave: (player)->
         @player = null
+        if @ambientSound?
+            @game.sounds.stopLoop @ambientSound
 
     changeRoom: (direction)->
         newLocation = x:@x, y:@y
@@ -78,7 +96,19 @@ module.exports = class World extends EventEmitter
     pop: ->
         @game.popWorld()
 
+    # Property Methods #############################################################################
+
+    Object.defineProperties @prototype,
+        key:
+            get: -> return @name
+
     # Object Overrides #############################################################################
 
     toString: ->
         return "World{name:#{@name}, x:#{@x}, y:#{@y}}"
+
+    # Private Methods ##############################################################################
+
+    _unpackData: (data)->
+        @data = data
+        @ambientSound = data.ambientSound if data.ambientSound?

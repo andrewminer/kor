@@ -56,7 +56,8 @@ module.exports = class RoomView extends View
         parentView = this
         model = @model
 
-        entityBoxes = @entityLayer.selectAll('.entity').data(@model.entities, (entity)-> entity.id)
+        data = [].concat @model.entities, @model.backgroundEntities
+        entityBoxes = @entityLayer.selectAll('.entity').data(data, (entity)-> entity.id)
 
         entityBoxes.enter().append 'g'
             .attr 'class', 'entity'
