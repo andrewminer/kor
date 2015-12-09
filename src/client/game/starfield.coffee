@@ -11,4 +11,4 @@ module.exports = class Starfield extends StaticEntity
 
     constructor: (x, y, data)->
         super x, y, data
-        @step = 1 + Math.floor Math.random() * 5
+        @step = 1 + Math.floor Math.random() * 10
