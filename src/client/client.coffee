@@ -9,15 +9,19 @@
 if typeof(global) is 'undefined'
     window.global = window
 
-global._ = require '../common/underscore'
-global.c = require '../common/constants'
-global.w = require 'when'
+global._  = require '../common/underscore'
+global.$  = require 'jquery'
+global.c  = require '../common/constants'
+global.d3 = require 'd3'
+global.w  = require 'when'
+
+global.Backbone = require 'backbone'
+global.Backbone.$ = $
 
 ########################################################################################################################
 
 Game     = require './game/game'
 GameView = require './views/game_view'
-
 
 root = d3.select('.game-screen').append 'svg'
     .attr 'width', c.canvas.width

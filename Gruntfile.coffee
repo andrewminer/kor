@@ -3,6 +3,16 @@
 # All rights reserved.
 #
 
+EXTERNAL_LIBS = [
+    'backbone'
+    'd3'
+    'howler'
+    'jquery'
+    'underscore'
+    'underscore.inflections'
+    'when'
+]
+
 module.exports = (grunt)->
 
     grunt.loadTasks tasks for tasks in grunt.file.expand './node_modules/grunt-*/tasks'
@@ -45,7 +55,7 @@ module.exports = (grunt)->
                     pretty: true
                 files: [
                     expand: true
-                    cwd:  './src/client'
+                    cwd:  './src/client/pages'
                     src:  '**/index.jade'
                     dest: './dist/static'
                     ext:  '.html'
@@ -60,7 +70,7 @@ module.exports = (grunt)->
                         f = f.replace /\//g, '_'
                         return f
                 files:
-                    './src/client/templates.js': ['./src/client/!{layouts}/**/!(index)*.jade']
+                    './src/client/templates.js': ['./src/client/pages/**/!(index)*.jade']
 
         sass:
             all:
@@ -73,7 +83,7 @@ module.exports = (grunt)->
                 tasks: ['copy:assets']
             client_source:
                 files: ['./src/{client,common}/**/*.coffee']
-                tasks: ['browserify']
+                tasks: ['browserify:internal']
             server_source:
                 files: ['./src/{common,server}/**/*.coffee']
                 tasks: ['copy:server_source']
@@ -82,30 +92,44 @@ module.exports = (grunt)->
                 tasks: ['jade:pages']
             jade_templates:
                 files: ['./src/**/!(index).jade']
-                tasks: ['jade:templates', 'browserify']
+                tasks: ['jade:templates', 'browserify:internal']
             sass:
                 files: ['./src/**/*.scss']
                 tasks: ['sass']
 
     grunt.registerTask 'default', ['build', 'start']
 
-    grunt.registerTask 'browserify', "Bundle source files needed in the browser", ->
+    grunt.registerTask 'browserify:internal', "Bundle source files needed in the browser", ->
         grunt.file.mkdir './dist/static'
-
         done = this.async()
-        options = cmd:'browserify', args:[
+
+        args = [].concat ("--external=#{lib}" for lib in EXTERNAL_LIBS), [
             '--debug'
-            '--full-paths'
             '--extension=.coffee'
+            '--outfile=./dist/static/internal.js'
             '--transform=coffeeify'
-            '--outfile=./dist/static/client.js'
             './src/client/client.coffee'
         ]
+
+        options = cmd:'browserify', args:args
         grunt.util.spawn options, (error)->
             console.log error if error?
             done()
 
-    grunt.registerTask 'build', ['jade', 'copy', 'sass', 'browserify']
+    grunt.registerTask 'browserify:external', "Bundle 3rd-party libraries used in the app", ->
+        grunt.file.mkdir './dist/static'
+        done = this.async()
+
+        args = [].concat ("--require=#{lib}" for lib in EXTERNAL_LIBS), [
+            '--outfile=./dist/static/external.js'
+        ]
+
+        options = cmd:'browserify', args:args
+        grunt.util.spawn options, (error)->
+            console.log error if error?
+            done()
+
+    grunt.registerTask 'build', ['jade', 'copy', 'sass', 'browserify:internal', 'browserify:external']
 
     grunt.registerTask 'start', "Start the server at port 8080", ->
       done = this.async()
