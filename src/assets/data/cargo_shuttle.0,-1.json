@@ -23,6 +23,10 @@
         "┌": "wall-side-wn-lavender",
         "└": "wall-side-ws-lavender"
     },
+    "entities": [
+        { "type": "pilot-seat", "x": "8", "y": "9" },
+        { "type": "pilot-seat", "x": "9", "y": "9" }
+    ],
     "plan": [
         "                ",
         "                ",

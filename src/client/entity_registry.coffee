@@ -6,5 +6,6 @@
 ########################################################################################################################
 
 module.exports =
-    'starfield': model:require('./game/starfield'), view:require('./views/static_entity_view')
-    'static-entity': model:require('./game/static_entity'), view:require('./views/static_entity_view')
+    'pilot-seat':    model:require('./game/planet/pilot_seat'), view:require('./views/static_entity_view')
+    'starfield':     model:require('./game/starfield'),         view:require('./views/static_entity_view')
+    'static-entity': model:require('./game/static_entity'),     view:require('./views/static_entity_view')

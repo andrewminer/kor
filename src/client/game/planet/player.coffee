@@ -110,8 +110,8 @@ module.exports = class Player extends Entity
 
         for entity in @room.entities
             continue unless Entity.haveCollided this, entity
-            promises.push this.onCollisionWith block
-            promises.push block.onCollisionWith this
+            promises.push this.onCollisionWith entity
+            promises.push entity.onCollisionWith this
 
         w.all(promises).then =>
             @room.testCollisionWith this
