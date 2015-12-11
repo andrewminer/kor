@@ -5,10 +5,10 @@
 
 EventEmitter = require 'events'
 Keyboard     = require './keyboard'
-Player       = require './planet/player'
-Room         = require './planet/room'
+Player       = require './world/player'
+Room         = require './world/room'
 SoundPlayer  = require './sounds'
-World        = require './planet/world'
+World        = require './world/world'
 
 ########################################################################################################################
 
