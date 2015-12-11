@@ -6,6 +6,7 @@
 PlayerView     = require './player_view'
 RoomView       = require './room_view'
 Scales         = require './scales'
+StarfieldView  = require './starfield_view'
 TransitionView = require './transition_view'
 View           = require './view'
 
@@ -21,18 +22,23 @@ module.exports = class WorldView extends View
         @lastPosition    = null
         @roomLayer       = null
         @roomViews       = {}
+        @starfieldLayer  = null
         @transitionLayer = null
         @transitionView  = null
 
     # View Overrides ###############################################################################
 
     render: ->
-        @roomLayer   = @root.append('g').attr('class', 'room-layer')
-        @playerLayer = @root.append('g').attr('class', 'player-layer')
-
+        @starfieldLayer  = @root.append('g').attr('class', 'starfield')
+        @roomLayer       = @root.append('g').attr('class', 'room-layer')
+        @playerLayer     = @root.append('g').attr('class', 'player-layer')
         @transitionLayer = @root.append('g').attr('class', 'transition-layer')
-        @transitionView  = @addChild new TransitionView @transitionLayer
+
+        @transitionView = @addChild new TransitionView @transitionLayer
         @transitionView.render()
+
+        @starfieldView = @addChild new StarfieldView @starfieldLayer
+        @starfieldView.render()
 
         super
 

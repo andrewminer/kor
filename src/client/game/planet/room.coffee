@@ -13,7 +13,7 @@ module.exports = class Room extends EventEmitter
 
     constructor: (@world, @x, @y)->
         @blocks             = []
-        @backgroundColor    = "#000000"
+        @backgroundColor    = null
         @backgroundEntities = []
         @data               = null
         @exits              = []
@@ -135,7 +135,8 @@ module.exports = class Room extends EventEmitter
                     @backgroundEntities.push @_createEntity _.extend {}, {x:x+1, y:y+1}, data.background.entity
                     continue
 
-                console.error "invalid image id: \"#{imageId}\" in #{@key}"
+                if imageId isnt ' '
+                    console.error "invalid image id: \"#{imageId}\" in #{@key}"
 
     _unpackSpawn: (data)->
         return unless data.spawn?

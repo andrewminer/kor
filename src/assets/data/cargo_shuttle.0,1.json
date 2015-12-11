@@ -1,10 +1,4 @@
 {
-    "background": {
-        "color": "black",
-        "entity": {
-            "type": "starfield"
-        }
-    },
     "blocks": {
         "╗": "wall-corner-ne-lavender",
         "╔": "wall-corner-nw-lavender",
@@ -23,31 +17,24 @@
         "┌": "wall-side-wn-lavender",
         "└": "wall-side-ws-lavender"
     },
-    "entities": [
-        { "type": "pilot-seat", "x": "8", "y": "9" },
-        { "type": "pilot-seat", "x": "9", "y": "9" }
-    ],
     "plan": [
-        "                ",
-        "                ",
-        "                ",
-        "                ",
-        "                ",
-        "                ",
-        "                ",
-        "     ╔┎┰┰┒╗     ",
+        "     ╔┎↿↾┒╗     ",
+        "     ├....┤     ",
         "     ┌....┐     ",
         "     ├....┤     ",
         "     └....┘     ",
-        "     ╚┖⇃⇂┚╝     "
+        "     ├....┤     ",
+        "     ╚┖┸┸┚╝     ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                "
     ],
-    "spawn": {
-        "x": 8.5,
-        "y": 6.5
-    },
     "tiles": {
         ".": "floor-tile-lavender",
-        "⇃": "door-sw-lavender",
-        "⇂": "door-se-lavender"
+        "↿": "door-nw-lavender",
+        "↾": "door-ne-lavender"
     }
 }

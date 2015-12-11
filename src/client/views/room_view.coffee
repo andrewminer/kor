@@ -31,12 +31,14 @@ module.exports = class RoomView extends View
     # Private Methods ##############################################################################
 
     _refreshBackground: ->
-        background = @backgroundLayer.selectAll('.background-rect').data([@model.background])
+        return unless @model.backgroundColor?
+
+        background = @backgroundLayer.selectAll('.background-rect').data([@model.backgroundColor])
         background.enter().append 'rect'
             .attr 'class', 'background-rect'
 
         background
-            .style 'fill', (color)-> color
+            .style 'fill', (backgroundColor)-> backgroundColor
             .attr('x', 0).attr('y', 0).attr('width', c.canvas.width).attr('height', c.canvas.height)
 
         background.exit().remove()
