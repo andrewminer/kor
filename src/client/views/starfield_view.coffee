@@ -11,7 +11,7 @@ View   = require './view'
 module.exports = class StarfieldView extends View
 
     @::FADE_DURATION      = c.speed.slow * 4
-    @::STAR_SWAP_INTERVAL = 100
+    @::STAR_SWAP_INTERVAL = 1000
     @::STARFIELD_COUNT    = 10
 
     constructor: (root)->

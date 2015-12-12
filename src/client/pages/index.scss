@@ -7,10 +7,16 @@ html {
     position: fixed; height: 100%; width: 100%;
 
     body {
+        background: black;
         display: flex;
         flex-direction: column;
         align-items: stretch;
         height: 100%;
+
+        .header {
+            background: gray;
+            height: 20px;
+        }
 
         .game-screen {
             display: flex;
