@@ -10,8 +10,9 @@ View   = require './view'
 
 module.exports = class StarfieldView extends View
 
+    @::FADE_DURATION      = c.speed.slow * 4
     @::STAR_SWAP_INTERVAL = 100
-    @::STARFIELD_COUNT = 10
+    @::STARFIELD_COUNT    = 10
 
     constructor: (root)->
         @_nextId = 0
@@ -21,7 +22,8 @@ module.exports = class StarfieldView extends View
             for x in [0...c.room.width]
                 @_tileData.push @_createTileData x + 0.5, y + 0.5
 
-        setInterval (=> @_swapStars()), @STAR_SWAP_INTERVAL
+        startSwapping = => setInterval (=> @_swapStars()), @STAR_SWAP_INTERVAL
+        setTimeout startSwapping, @FADE_DURATION
 
         super root
 
