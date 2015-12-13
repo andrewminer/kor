@@ -53,13 +53,17 @@ module.exports = class GameView extends View
 
             do (transition)=>
                 if _.isFunction @transitionView[transition.begin?.name]
-                    promise = promise.then => @transitionView[transition.begin.name]()
+                    promise = promise
+                        .then => @transitionView[transition.begin.name]()
+                        .then => transition.begin.resolve(true)
 
                 promise = promise.then => @_refreshModeView()
                 didRefresh = true
 
                 if _.isFunction @transitionView[transition.end?.name]
-                    promise = promise.then => @transitionView[transition.end.name]()
+                    promise = promise
+                        .then => @transitionView[transition.end.name]()
+                        .then => transition.end.resolve(true)
 
                 promises.push promise
 

@@ -20,6 +20,10 @@ module.exports = class SoundPlayer
 
     # Public Methods ###############################################################################
 
+    mute: ->
+        Howler.mute()
+        @_muted = true
+
     startLoop: (name)->
         sound = @_loops[name]
         if not sound?
@@ -37,5 +41,16 @@ module.exports = class SoundPlayer
         sound.pause()
 
     toggleMute: ->
-        if @_muted then Howler.unmute() else Howler.mute()
-        @_muted = not @_muted
+        if @_muted then @unmute() else @mute()
+
+    unmute: ->
+        Howler.unmute()
+        @_muted = false
+
+    # Property Methods #############################################################################
+
+    Object.defineProperties @prototype,
+        muted:
+            get: -> @_muted
+            set: (muted)->
+                if muted then @mute() else @unmute()

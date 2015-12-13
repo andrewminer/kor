@@ -23,12 +23,11 @@ module.exports = class WorldMode extends GameMode
         worldData = @_worldStack.pop()
         return unless worldData?
 
-        if @world? then @world.leave @_player
-
-        @world = worldData.world
-        game.pushTransition worldData.exit.out, worldData.exit.in
-
-        return @world.enter @_player, worldData.exit
+        game.pushTransition(worldData.exit.out, worldData.exit.in).begin
+            .then =>
+                if @world? then @world.leave @_player
+                @world = worldData.world
+                return @world.enter @_player, worldData.exit
 
     pushWorld: (worldChange)->
         if not worldChange?.name? then throw new Error 'worldChange.name is required'

@@ -39,7 +39,7 @@ module.exports = class Player extends Entity
     # Property Methods #############################################################################
 
     Object.defineProperties @prototype,
-        keyboardCommands:
+        keyDownCommands:
             get: ->
                 37: '_onWest'  # left arrow
                 38: '_onNorth' # up arrow

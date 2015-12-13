@@ -67,13 +67,22 @@ module.exports = class Game
 
         @_transitions.push begin:beginData, end:endData
 
+        result = begin:beginData?.promise, end:endData?.promise
+        result.begin ?= w(true)
+        result.end ?= w(true)
+        return result
+
     popTransition: ->
         return @_transitions.shift()
 
     quit: ->
-        @_paused = true
         @_keyboard.unregisterCommands this
         @_keyboard.stopListening()
+
+        @pushTransition('closeDoors', 'show').begin
+            .then =>
+                @sounds.mute()
+                @_paused = true
 
     resume: ->
         return if not @_paused
@@ -99,7 +108,7 @@ module.exports = class Game
         keyboard:
             get: -> return @_keyboard
 
-        keyboardCommands:
+        keyUpCommands:
             get: ->
                 77: 'toggleMute'  # 'm' key
                 80: 'togglePause' # 'p' key

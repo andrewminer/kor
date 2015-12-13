@@ -8,9 +8,10 @@
 module.exports = class Keyboard
 
     constructor: ->
-        @_commands    = []
-        @_lastCommand = null
-        @_keyCodes    = {}
+        @_activeCommands  = []
+        @_lastCommand     = null
+        @_keyUpCommands   = {}
+        @_keyDownCommands = {}
 
     # Public Methods ###############################################################################
 
@@ -21,31 +22,30 @@ module.exports = class Keyboard
         w.try command
 
     registerCommands: (object)->
-        commandMap = object.keyboardCommands
-        return unless commandMap?
-
-        for keyCode, command of commandMap
-            continue unless _.isFunction object[command]
-            do (keyCode, command)=>
-                @_keyCodes[keyCode] = -> object[command]()
+        @_registerCommands object, object.keyUpCommands, @_keyUpCommands
+        @_registerCommands object, object.keyDownCommands, @_keyDownCommands
 
     startListening: ->
         @_oldDownHandler = global.onkeydown
         window.onkeydown = (event)=>
-            commandName = @_keyCodes[event.keyCode]
-            return unless commandName
+            command = @_keyDownCommands[event.keyCode]
+            return unless command
 
             event.preventDefault()
-            if @_commands.indexOf(commandName) is -1
-                @_commands.push commandName
+            if @_activeCommands.indexOf(command) is -1
+                @_activeCommands.push command
 
         @_oldUpHandler = global.onkeyup
         window.onkeyup = (event)=>
-            commandName = @_keyCodes[event.keyCode]
-            return unless commandName
+            command = @_keyDownCommands[event.keyCode]
+            if command?
+                event.preventDefault()
+                @_activeCommands = _(@_activeCommands).without command
 
-            event.preventDefault()
-            @_commands = _(@_commands).without commandName
+            command = @_keyUpCommands[event.keyCode]
+            if command?
+                event.preventDefault()
+                w.try command
 
         @_listening = true
 
@@ -67,4 +67,14 @@ module.exports = class Keyboard
     Object.defineProperties @prototype,
         command:
             get: ->
-                return _.last @_commands
+                return _.last @_activeCommands
+
+    # Private Methods ##############################################################################
+
+    _registerCommands: (object, source, target)->
+        return unless object? and source?
+
+        for keyCode, command of source
+            continue unless _.isFunction object[command]
+            do (keyCode, command)=>
+                target[keyCode] = -> object[command]()
