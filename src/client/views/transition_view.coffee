@@ -21,12 +21,12 @@ module.exports = class TransitionView extends View
         w.promise (resolve, reject)=>
             barnDoors
                 .attr 'width', CLOSED
-                .style 'opacity', c.opacity.hidden
+                .style 'opacity', c.opacity.shown
 
             d3.transition()
                 .duration c.speed.normal
                 .each ->
-                    barnDoors.transition().style 'opacity', c.opacity.shown
+                    barnDoors.transition().style 'opacity', c.opacity.hidden
                 .each 'end', -> resolve()
 
     fadeOut: ->
@@ -34,12 +34,12 @@ module.exports = class TransitionView extends View
         w.promise (resolve, reject)=>
             barnDoors
                 .attr 'width', CLOSED
-                .style 'opacity', c.opacity.shown
+                .style 'opacity', c.opacity.hidden
 
             d3.transition()
                 .duration c.speed.normal
                 .each ->
-                    barnDoors.transition().style 'opacity', c.opacity.hidden
+                    barnDoors.transition().style 'opacity', c.opacity.shown
                 .each 'end', -> resolve()
 
     hide: ->

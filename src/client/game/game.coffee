@@ -44,6 +44,7 @@ module.exports = class Game
     changeGameMode: (gameModeName)->
         gameMode = @_allGameModes[gameModeName]
         if not gameMode? then throw new Error "unsupported game mode: #{gameModeName}"
+        return if gameMode is @_gameMode
 
         if @_gameMode? then @_gameMode.leaveMode()
         @_gameMode = gameMode
@@ -128,6 +129,8 @@ module.exports = class Game
 
     _onGameStep: ->
         return w(true) if @paused
+
+        console.log "game loop"
 
         start = Date.now()
         w(true)

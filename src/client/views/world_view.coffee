@@ -58,7 +58,6 @@ module.exports = class WorldView extends View
         return w(true) unless @lastPosition?
         return w(true) if @lastPosition.x is @model.x and @lastPosition.y is @model.y
 
-        console.log "starting room change"
         @playerView.refresh()
         @_refreshRooms()
 
@@ -73,7 +72,6 @@ module.exports = class WorldView extends View
 
                     @_refreshLayers animated:true
                 .each 'end', =>
-                    console.log "done"
                     resolve()
 
     _refreshLayers: (animated=false)->

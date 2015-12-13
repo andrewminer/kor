@@ -10,6 +10,7 @@ EXTERNAL_LIBS = [
     'jquery'
     'underscore'
     'underscore.inflections'
+    'victor'
     'when'
 ]
 
@@ -104,7 +105,6 @@ module.exports = (grunt)->
         done = this.async()
 
         args = [].concat ("--external=#{lib}" for lib in EXTERNAL_LIBS), [
-            '--debug'
             '--extension=.coffee'
             '--outfile=./dist/static/internal.js'
             '--transform=coffeeify'

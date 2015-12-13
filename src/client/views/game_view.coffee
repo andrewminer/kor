@@ -14,7 +14,7 @@ module.exports = class GameView extends View
 
     constructor: (root, model)->
         @_displayedMode   = null
-        @_modelViews      = {}
+        @_modeViews      = {}
         @_transitionLayer = null
         @_transitionView  = null
         super root, model
@@ -22,7 +22,7 @@ module.exports = class GameView extends View
     # View Overrides ###############################################################################
 
     render: ->
-        modelViews = @_modelViews
+        modeViews = @_modeViews
 
         @gameModeLayers = @root.selectAll('.mode-layer').data(@model.allGameModes)
         @gameModeLayers.enter().append('g')
@@ -35,7 +35,7 @@ module.exports = class GameView extends View
                 ViewClass = GameModeRegistry[gameMode.name].view
                 view = new ViewClass layer, gameMode
                 view.render()
-                modelViews[gameMode.name] = view
+                modeViews[gameMode.name] = view
 
         @transitionLayer = @root.append('g').attr('class', 'transition-layer')
         @transitionView  = new TransitionView @transitionLayer
@@ -72,36 +72,17 @@ module.exports = class GameView extends View
     # Private Methods ##############################################################################
 
     _refreshModeView: ->
+        promise     = w(true)
         currentMode = @model.gameMode
-        modeChanged = currentMode? and currentMode isnt @_displayedMode
-        promise = w(true)
-
-        if currentMode?
-            promise = promise.then => @_modelViews[currentMode.name].refresh()
-
-        if @_displayedMode? and @_displayedMode isnt currentMode
-            promise = promise.then => @_modelViews[@_displayedMode.name].refresh()
+        modeChanged = currentMode isnt @_displayedMode
 
         if modeChanged
-            w.promise (resolve, reject)=>
-                if @_displayedMode
-                    hideOld = @root.selectAll(".#{@_displayedMode.name}")
-                        .transition()
-                            .duration c.speed.normal / 2
-                            .style 'opacity', c.opacity.hidden
+            if currentMode? then @root.selectAll(".#{currentMode.name}").style 'opacity', c.opacity.shown
+            if @_displayedMode? then @root.selectAll(".#{@_displayedMode.name}").style 'opacity', c.opacity.hidden
+            @_displayedMode = currentMode
 
-                    hideOld.transition().selectAll(".#{currentMode.name}")
-                        .duration c.speed.normal / 2
-                        .style 'opacity', c.opacity.shown
-                        .each 'end', ->
-                            resolve()
-                else
-                    @root.selectAll(".#{currentMode.name}")
-                        .transition()
-                            .duration c.speed.normal
-                            .style 'opacity', c.opacity.visible
-                            .each 'end', ->
-                                resolve()
+        if currentMode?
+            view = @_modeViews[currentMode.name]
+            if view? then promise = view.refresh()
 
-        @_displayedMode = currentMode
         return promise

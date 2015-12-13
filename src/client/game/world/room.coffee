@@ -23,8 +23,8 @@ module.exports = class Room
 
     # Class Methods ################################################################################
 
-    @key: (type, x, y)->
-        "#{type}.#{x},#{y}"
+    @key: (worldName, x, y)->
+        "#{worldName}.#{x},#{y}"
 
     # Public Methods ###############################################################################
 
@@ -32,7 +32,7 @@ module.exports = class Room
         if @data? then return w(this)
 
         w.promise (resolve, reject)=>
-            d3.json "data/#{@key}.json", (error, data)=>
+            d3.json "data/world/#{@world.name}/#{@x},#{@y}.json", (error, data)=>
                 if error?
                     reject error
                 else
@@ -105,6 +105,8 @@ module.exports = class Room
         return unless data.entities?
 
         for entityData in data.entities
+            entityData.x = parseInt entityData.x
+            entityData.y = parseInt entityData.y
             @entities.push @_createEntity entityData
 
     _unpackExits: (data)->

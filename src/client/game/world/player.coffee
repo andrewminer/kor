@@ -25,14 +25,6 @@ module.exports = class Player extends Entity
 
     # Public Methods ###############################################################################
 
-    dispatchKeyboardEvents: (keyboard)->
-        command = keyboard.command
-        promise = w(true)
-        if _.isFunction this[command]
-            promise = this[command]()
-            @stepAnimation()
-        return promise
-
     onEnteredRoom: (newRoom)->
         @room = newRoom
 

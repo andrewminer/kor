@@ -50,7 +50,7 @@ module.exports = class World
         if @data? then return w(this)
 
         w.promise (resolve, reject)=>
-            d3.json "data/#{@key}.json", (error, data)=>
+            d3.json "data/world/#{@name}/world.json", (error, data)=>
                 if error?
                     reject error
                 else
