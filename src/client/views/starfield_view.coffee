@@ -29,22 +29,16 @@ module.exports = class StarfieldView extends View
 
     # Overrideable Methods #########################################################################
 
+    render: ->
+        @tiles = @root.selectAll('.star-tile').data @_tileData, (tile)-> tile.id
+        @_enterStars animated:false
+        super
+
     refresh: ->
-        tiles = @root.selectAll('.star-tile').data @_tileData, (tile)-> tile.id
+        @tiles = @root.selectAll('.star-tile').data @_tileData, (tile)-> tile.id
+        @_enterStars animated:true
 
-        tiles.enter().append 'image'
-            .attr 'class', 'star-tile'
-            .attr 'x', (tile)-> Scales.room.x tile.x
-            .attr 'y', (tile)-> Scales.room.y tile.y
-            .attr 'width', c.tile.width
-            .attr 'height', c.tile.height
-            .attr 'xlink:href', (tile)-> "/images/entities/starfield-#{tile.imageNumber}.png"
-            .style 'opacity', c.opacity.hidden
-            .transition()
-                .duration c.speed.slow * 4
-                .style 'opacity', c.opacity.shown
-
-        tiles.exit().transition()
+        @tiles.exit().transition()
             .duration c.speed.slow * 4
             .style 'opacity', c.opacity.hidden
             .remove()
@@ -58,6 +52,23 @@ module.exports = class StarfieldView extends View
         x:           x
         y:           y
         imageNumber: 1 + Math.floor(Math.random() * @STARFIELD_COUNT)
+
+    _enterStars: (options={animated:false})->
+        enteringTiles = @tiles.enter().append 'image'
+            .attr 'class', 'star-tile'
+            .attr 'x', (tile)-> Scales.room.x tile.x
+            .attr 'y', (tile)-> Scales.room.y tile.y
+            .attr 'width', c.tile.width
+            .attr 'height', c.tile.height
+            .attr 'xlink:href', (tile)-> "/images/entities/starfield-#{tile.imageNumber}.png"
+            .style 'opacity', c.opacity.hidden
+
+        if options.animated
+            enteringTiles.transition()
+                .duration c.speed.slow * 4
+                .style 'opacity', c.opacity.shown
+        else
+            enteringTiles.style 'opacity', c.opacity.shown
 
     _swapStars: ->
         i = Math.floor(Math.random() * @_tileData.length)

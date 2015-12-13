@@ -14,27 +14,33 @@ CLOSED = c.canvas.width / 2
 
 module.exports = class TransitionView extends View
 
-    # Public Methods ###############################################################################
+    # Transition Methods ###########################################################################
 
     fadeIn: ->
+        barnDoors = @barnDoors
         w.promise (resolve, reject)=>
-            @barnDoors
-                .attr 'width', CLOSED
-                .style 'opacity', c.opacity.shown
-                .transition()
-                    .duration c.speed.normal
-                    .style 'opacity', c.opacity.hidden
-                    .each 'end', -> resolve()
-
-    fadeOut: ->
-        w.promise (resolve, reject)=>
-            @barnDoors
+            barnDoors
                 .attr 'width', CLOSED
                 .style 'opacity', c.opacity.hidden
-                .transition()
-                    .duration c.speed.normal
-                    .style 'opacity', c.opacity.shown
-                    .each 'end', -> resolve()
+
+            d3.transition()
+                .duration c.speed.normal
+                .each ->
+                    barnDoors.transition().style 'opacity', c.opacity.shown
+                .each 'end', -> resolve()
+
+    fadeOut: ->
+        barnDoors = @barnDoors
+        w.promise (resolve, reject)=>
+            barnDoors
+                .attr 'width', CLOSED
+                .style 'opacity', c.opacity.shown
+
+            d3.transition()
+                .duration c.speed.normal
+                .each ->
+                    barnDoors.transition().style 'opacity', c.opacity.hidden
+                .each 'end', -> resolve()
 
     hide: ->
         @barnDoors
@@ -43,14 +49,18 @@ module.exports = class TransitionView extends View
         return w(true)
 
     openDoors: ->
-        w.promise (resolve, reject)=>
-            @barnDoors
+        barnDoors = @barnDoors
+        w.promise (resolve, reject)->
+            barnDoors
                 .style 'opacity', c.opacity.shown
                 .attr 'width', CLOSED
-                .transition()
-                    .duration c.speed.slow
-                    .attr 'width', OPEN
-                    .each 'end', -> resolve()
+
+            d3.transition()
+                .duration c.speed.slow
+                .each ->
+                    barnDoors.transition().attr 'width', OPEN
+                .each 'end', ->
+                    resolve()
 
     show: ->
         @barnDoors
@@ -58,15 +68,18 @@ module.exports = class TransitionView extends View
             .attr 'width', CLOSED
         return w(true)
 
-    shutDoors: ->
-        w.promise (resolve, reject)=>
-            @barnDoors
+    closeDoors: ->
+        barnDoors = @barnDoors
+        w.promise (resolve, reject)->
+            barnDoors
                 .style 'opacity', c.opacity.shown
                 .attr 'width', OPEN
-                .transition()
-                    .duration c.speed.slow
-                    .attr 'width', CLOSED
-                    .each 'end', -> resolve()
+
+            d3.transition()
+                .duration c.speed.slow
+                .each ->
+                    barnDoors.transition().attr 'width', CLOSED
+                .each 'end', -> resolve()
 
     # View Overrides ###############################################################################
 
@@ -81,8 +94,13 @@ module.exports = class TransitionView extends View
                     return "" if side is 'left'
                     return "translate(#{c.canvas.width},0) scale(-1, 1)" if side is 'right'
                 box.append 'rect'
-                    .style('opacity', c.opacity.shown).style('fill', 'black')
-                    .attr('x', 0).attr('y', 0).attr('height', c.canvas.height).attr('width', CLOSED)
+                    .attr 'class', 'barn-door'
+                    .attr 'height', c.canvas.height
+                    .attr 'width', CLOSED
+                    .attr 'x', 0
+                    .attr 'y', 0
+                    .style 'fill', 'black'
+                    .style 'opacity', c.opacity.shown
 
-        @barnDoors = @root.selectAll('rect')
+        @barnDoors = @root.selectAll('.barn-door')
         super

@@ -49,5 +49,7 @@ exports.tile.height = 64
 exports.transition = {}
 exports.transition.fadeOut    = 'fadeOut'
 exports.transition.fadeIn     = 'fadeIn'
+exports.transition.hide       = 'hide'
 exports.transition.openDoors  = 'openDoors'
 exports.transition.closeDoors = 'closeDoors'
+exports.transition.show       = 'show'

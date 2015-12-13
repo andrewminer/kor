@@ -5,11 +5,10 @@
 
 Block          = require './block'
 entityRegistry = require '../../entity_registry'
-EventEmitter   = require 'events'
 
 ########################################################################################################################
 
-module.exports = class Room extends EventEmitter
+module.exports = class Room
 
     constructor: (@world, @x, @y)->
         @blocks             = []
@@ -81,7 +80,6 @@ module.exports = class Room extends EventEmitter
         Entity = entityRegistry[entityData.type]?.model
         if Entity
             entity = new Entity entityData.x, entityData.y, entityData
-            entity.game = @game
         else
             console.error "invalid entity type: #{entityData.type} in #{@key}"
 

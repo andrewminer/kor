@@ -3,123 +3,130 @@
 # All rights reserved.
 #
 
-EventEmitter = require 'events'
-Keyboard     = require './keyboard'
-Player       = require './world/player'
-Room         = require './world/room'
-SoundPlayer  = require './sounds'
-World        = require './world/world'
+GameModeRegistry = require '../game_mode_registry'
+GameView         = require '../views/game_view'
+Keyboard         = require './keyboard'
+SoundPlayer      = require './sounds'
 
 ########################################################################################################################
 
-CLEAR_COMMAND_TIMEOUT = 1000
-
-########################################################################################################################
-
-module.exports = class Game extends EventEmitter
-
-    @KEYBOARD_COMMANDS =
-        80:  'pause' # 'p' key
-        81:  'quit'  # 'q' key
+module.exports = class Game
 
     constructor: ->
-        @_runLoopId   = null
-        @_paused      = true
-        @_player      = null
-        @_transitions = null
-        @sounds       = new SoundPlayer
-        @view         = null
-        @_worldStack  = []
+        @_allGameModes = {}
+        @_keyboard     = new Keyboard
+        @_gameMode     = null
+        @_paused       = true
+        @_sounds       = new SoundPlayer
+        @_transitions  = []
+        @_view         = null
 
-        @_keyboard = new Keyboard
-        @_keyboard.registerCommands Player.KEYBOARD_COMMANDS
-        @_keyboard.registerCommands Game.KEYBOARD_COMMANDS
+        for gameModeName, gameModeEntry of GameModeRegistry
+            GameModeClass = gameModeEntry.model
+            gameMode = new GameModeClass gameModeName, this
+            @_allGameModes[gameModeName] = gameMode
 
     # Public Methods ###############################################################################
 
     begin: ->
-        @_player = new Player
+        @_keyboard.registerCommands this
         @_keyboard.startListening()
-        @_runLoopId = setInterval (=> @dispatchKeyboardEvents(@_keyboard)), c.animation.frameDuration
 
-        @pushWorld name:'cargo_shuttle', transition:in:c.transition.openDoors
-            .done => @resume()
+        promises = []
+        for gameMode in @allGameModes
+            promises.push gameMode.begin()
 
-        @emit c.event.game.begin
+        w.all promises
+            .then =>
+                @changeGameMode _.keys(@_allGameModes)[0]
+                @resume()
 
-    # Property Methods #############################################################################
+    changeGameMode: (gameModeName)->
+        gameMode = @_allGameModes[gameModeName]
+        if not gameMode? then throw new Error "unsupported game mode: #{gameModeName}"
 
-    popWorld: ->
-        worldData = @_worldStack.pop()
-        return unless worldData?
+        if @_gameMode? then @_gameMode.leaveMode()
+        @_gameMode = gameMode
+        @_gameMode.enterMode()
 
-        if @world? then @world.leave @_player
-
-        @world = worldData.world
-        @world.transition = start:worldData.exit.out, end:worldData.exit.in
-
-        return @world.enter @_player, worldData.exit
-
-    pushWorld: (worldChange)->
-        worldChange           ?= {}
-        worldChange.enter     ?= {}
-        worldChange.enter.out ?= c.transition.fadeOut
-        worldChange.enter.in  ?= c.transition.fadeIn
-        worldChange.exit      ?= {}
-        worldChange.exit.out  ?= c.transition.fadeOut
-        worldChange.exit.in   ?= c.transition.fadeIn
-        worldChange.exit.x    ?= null
-        worldChange.exit.y    ?= null
-        worldChange.x         ?= 0
-        worldChange.y         ?= 0
-
-        if @world? then @world.leave @_player
-        @_worldStack.push world:@world, exit:worldChange.exit
-
-        @world            = new World this, worldChange.name
-        @world.transition = start:worldChange.enter.out, end:worldChange.enter.in
-        @world.x          = worldChange.x
-        @world.y          = worldChange.y
-
-        return @world.enter @_player
-
-    dispatchKeyboardEvents: (keyboard)->
-        command = @_keyboard.command
-        return unless command
-        return if @_lastCommand? and command is @_lastCommand
-
-        if command is 'quit'
-            @quit()
-        else if command is 'pause'
-            @paused = if @paused then false else true
-
-        @_lastCommand = command
-        clearTimeout @_commandClearId if @_commandClearId?
-        @_commandClearId = setTimeout (-> @_lastCommand = null), CLEAR_COMMAND_TIMEOUT
+    getGameMode: (name)->
+        return @_allGameModes[name]
 
     pause: ->
         return if @_paused
         @_paused = true
+
+    pushTransition: (begin, end)->
+        if begin?
+            beginData      = w.defer()
+            beginData.name = begin
+
+        if end?
+            endData        = w.defer()
+            endData.name   = end
+
+        @_transitions.push begin:beginData, end:endData
+
+    popTransition: ->
+        return @_transitions.shift()
+
+    quit: ->
+        @_paused = true
+        @_keyboard.unregisterCommands this
+        @_keyboard.stopListening()
 
     resume: ->
         return if not @_paused
         @_paused = false
         @_onGameStep()
 
-    quit: ->
-        @_keyboard.stopListening()
-        clearInterval @_runLoopId
-        @_runLoopId = null
+    toggleMute: ->
+        @sounds.toggleMute()
+
+    togglePause: ->
+        if @paused then @resume() else @pause()
+
+    # Property Methods #############################################################################
+
+    Object.defineProperties @prototype,
+
+        allGameModes:
+            get: -> return _.values @_allGameModes
+
+        gameMode:
+            get: -> return @_gameMode
+
+        keyboard:
+            get: -> return @_keyboard
+
+        keyboardCommands:
+            get: ->
+                77: 'toggleMute'  # 'm' key
+                80: 'togglePause' # 'p' key
+                81: 'quit'        # 'q' key
+
+        paused:
+            get: -> return @_paused
+
+        sounds:
+            get: -> return @_sounds
+
+        view:
+            get: -> return @_view
+            set: (view)-> @_view = view
 
     # Private Methods ##############################################################################
 
     _onGameStep: ->
         return w(true) if @paused
 
-        @_player.dispatchKeyboardEvents(@_keyboard)
-            .then =>
-                @world.onGameStep()
-                @view.refresh()
-            .then().delay(c.animation.frameDuration)
-            .done =>
-                @_onGameStep()
+        start = Date.now()
+        w(true)
+            .then     => @keyboard.dispatchCommands()
+            .catch (e)=> console.error "error during keyboard dispatch: #{e.stack}"
+            .then     => @gameMode.onGameStep()
+            .catch (e)=> console.error "error during game step: #{e.stack}"
+            .then     => @view.refresh()
+            .catch (e)=> console.error "error during view refresh: #{e.stack}"
+            .delay       c.animation.frameDuration - (Date.now() - start)
+            .done     => @_onGameStep()

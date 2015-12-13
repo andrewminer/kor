@@ -16,6 +16,7 @@ module.exports = class SoundPlayer
                 urls: [ '/sounds/rocket_thrusters.mp3' ]
                 loop: true
                 volume: 0.25
+        @_muted = false
 
     # Public Methods ###############################################################################
 
@@ -34,3 +35,7 @@ module.exports = class SoundPlayer
             return
 
         sound.pause()
+
+    toggleMute: ->
+        if @_muted then Howler.unmute() else Howler.mute()
+        @_muted = not @_muted

@@ -3,24 +3,24 @@
 # All rights reserved.
 #
 
-EventEmitter = require 'events'
-Room         = require './room'
+Room = require './room'
 
 ########################################################################################################################
 
-module.exports = class World extends EventEmitter
+module.exports = class World
 
-    constructor: (@game, @name)->
-        if not @game? then throw new Error 'game is required'
-        if not @name? then throw new Error 'name is required'
+    constructor: (mode, name)->
+        if not mode? then throw new Error 'mode is required'
+        if not name? then throw new Error 'name is required'
 
         @ambientSound = null
         @data         = null
+        @mode         = mode
+        @name         = name
         @player       = null
         @room         = null
         @roomCache    = {}
         @roomPath     = []
-        @transition   = null
         @x            = 0
         @y            = 0
 
@@ -35,10 +35,9 @@ module.exports = class World extends EventEmitter
 
         @load().then =>
             if @ambientSound?
-                @game.sounds.startLoop @ambientSound
+                game.sounds.startLoop @ambientSound
 
             @room = new Room this, @x, @y
-            @room.game = @game
 
             @roomCache[@room.key] = @room
             @roomPath.push @room
@@ -61,7 +60,7 @@ module.exports = class World extends EventEmitter
     leave: (player)->
         @player = null
         if @ambientSound?
-            @game.sounds.stopLoop @ambientSound
+            game.sounds.stopLoop @ambientSound
 
     changeRoom: (direction)->
         newLocation = x:@x, y:@y
@@ -74,7 +73,6 @@ module.exports = class World extends EventEmitter
         nextRoom = @roomCache[Room.key(@name, newLocation.x, newLocation.y)]
         if not nextRoom?
             nextRoom = new Room this, newLocation.x, newLocation.y
-            nextRoom.game = @game
             @roomCache[nextRoom.key] = nextRoom
 
         nextRoom.load()
@@ -91,10 +89,11 @@ module.exports = class World extends EventEmitter
                 console.error e
 
     onGameStep: ->
+        return unless @room?
         @room.onGameStep()
 
     pop: ->
-        @game.popWorld()
+        @mode.popWorld()
 
     # Property Methods #############################################################################
 

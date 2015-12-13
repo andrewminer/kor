@@ -7,7 +7,6 @@ PlayerView     = require './player_view'
 RoomView       = require './room_view'
 Scales         = require './scales'
 StarfieldView  = require './starfield_view'
-TransitionView = require './transition_view'
 View           = require './view'
 
 ########################################################################################################################
@@ -17,14 +16,12 @@ module.exports = class WorldView extends View
     constructor: (root, model)->
         super root, model
 
-        @playerLayer     = null
-        @playerView      = null
-        @lastPosition    = null
-        @roomLayer       = null
-        @roomViews       = {}
-        @starfieldLayer  = null
-        @transitionLayer = null
-        @transitionView  = null
+        @playerLayer    = null
+        @playerView     = null
+        @lastPosition   = null
+        @roomLayer      = null
+        @roomViews      = {}
+        @starfieldLayer = null
 
     # View Overrides ###############################################################################
 
@@ -32,10 +29,6 @@ module.exports = class WorldView extends View
         @starfieldLayer  = @root.append('g').attr('class', 'starfield')
         @roomLayer       = @root.append('g').attr('class', 'room-layer')
         @playerLayer     = @root.append('g').attr('class', 'player-layer')
-        @transitionLayer = @root.append('g').attr('class', 'transition-layer')
-
-        @transitionView = @addChild new TransitionView @transitionLayer
-        @transitionView.render()
 
         @starfieldView = @addChild new StarfieldView @starfieldLayer
         @starfieldView.render()
@@ -44,8 +37,8 @@ module.exports = class WorldView extends View
 
     refresh: ->
         super
-            .then =>
-                @_runTransition('start')
+
+        w(true)
             .then =>
                 @_changeToNewRoom()
             .then =>
@@ -54,7 +47,6 @@ module.exports = class WorldView extends View
                 @_refreshLayers()
                 @_refreshRooms()
                 @_refreshPlayer()
-                @_runTransition 'end'
 
     _onModelChanged: (oldModel, newModel)->
         @lastPosition = null
@@ -66,6 +58,7 @@ module.exports = class WorldView extends View
         return w(true) unless @lastPosition?
         return w(true) if @lastPosition.x is @model.x and @lastPosition.y is @model.y
 
+        console.log "starting room change"
         @playerView.refresh()
         @_refreshRooms()
 
@@ -80,6 +73,7 @@ module.exports = class WorldView extends View
 
                     @_refreshLayers animated:true
                 .each 'end', =>
+                    console.log "done"
                     resolve()
 
     _refreshLayers: (animated=false)->
@@ -110,8 +104,7 @@ module.exports = class WorldView extends View
             "translate(#{Scales.room.x(player.x)},#{Scales.room.y(player.y)})"
 
         playerBox.exit()
-            .each (player)->
-                parentView.playerView = null
+            .each (player)-> parentView.playerView = null
             .remove()
 
     _refreshRooms: ->
@@ -134,13 +127,3 @@ module.exports = class WorldView extends View
         roomBoxes.exit()
             .each (room)-> delete parentView.roomViews[room.key]
             .remove()
-
-    _runTransition: (which)->
-        return w(true) unless @model
-        return w(true) unless @model.transition
-
-        name = @model.transition[which]
-        return w(true) unless _.isFunction @transitionView[name]
-
-        return @transitionView[name]().then =>
-            delete @model.transition[which]

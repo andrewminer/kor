@@ -3,11 +3,9 @@
 # All rights reserved.
 #
 
-EventEmitter = require 'events'
-
 ########################################################################################################################
 
-module.exports = class Entity extends EventEmitter
+module.exports = class Entity
 
     nextId = 0
 

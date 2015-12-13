@@ -14,16 +14,6 @@ POSITION_ADJUST_THRESHOLD = 0.125
 
 module.exports = class Player extends Entity
 
-    @KEYBOARD_COMMANDS =
-        37: '_onWest'  # left arrow
-        38: '_onNorth' # up arrow
-        39: '_onEast'  # right arrow
-        40: '_onSouth' # down arrow
-        65: '_onWest'  # 'a' key
-        68: '_onEast'  # 'd' key
-        83: '_onSouth' # 's' key
-        87: '_onNorth' # 'w' key
-
     constructor: ->
         super c.room.width / 2, c.room.height / 2
 
@@ -45,6 +35,20 @@ module.exports = class Player extends Entity
 
     onEnteredRoom: (newRoom)->
         @room = newRoom
+
+    # Property Methods #############################################################################
+
+    Object.defineProperties @prototype,
+        keyboardCommands:
+            get: ->
+                37: '_onWest'  # left arrow
+                38: '_onNorth' # up arrow
+                39: '_onEast'  # right arrow
+                40: '_onSouth' # down arrow
+                65: '_onWest'  # 'a' key
+                68: '_onEast'  # 'd' key
+                83: '_onSouth' # 's' key
+                87: '_onNorth' # 'w' key
 
     # Entity Overrides #############################################################################
 
