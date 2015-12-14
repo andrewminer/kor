@@ -56,11 +56,8 @@ module.exports = class Keyboard
         window.onkeyup = @_oldUpHandler
 
     unregisterCommands: (object)->
-        commandMap = object.keyboardCommands
-        return unless commandMap?
-
-        for keyCode, command of commandMap
-            delete @_keyCodes[keyCode]
+        @_unregisterCommands object, object.keyUpCommands, @_keyUpCommands
+        @_unregisterCommands object, object.keyDownCommands, @_keyDownCommands
 
     # Property Methods #############################################################################
 
@@ -78,3 +75,9 @@ module.exports = class Keyboard
             continue unless _.isFunction object[command]
             do (keyCode, command)=>
                 target[keyCode] = -> object[command]()
+
+    _unregisterCommands: (object, source, target)->
+        return unless source?
+
+        for keyCode, command of source
+            delete target[keyCode]
