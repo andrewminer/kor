@@ -79,5 +79,6 @@ module.exports = class Keyboard
     _unregisterCommands: (object, source, target)->
         return unless source?
 
+        @_activeCommands = []
         for keyCode, command of source
             delete target[keyCode]

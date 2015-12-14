@@ -16,6 +16,8 @@ module.exports = class PilotSeat extends StaticEntity
 
         game.pushTransition('fadeOut', 'fadeIn').begin
             .then =>
+                return unless game.gameMode.name is 'world'
+
                 entity.y = @y + 1
                 game.changeGameMode 'space'
 

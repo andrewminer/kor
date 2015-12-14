@@ -18,7 +18,7 @@ module.exports = class Game
         @_gameMode     = null
         @_paused       = true
         @_sounds       = new SoundPlayer
-        @_transitions  = []
+        @_transition   = null
         @_view         = null
 
         for gameModeName, gameModeEntry of GameModeRegistry
@@ -58,23 +58,26 @@ module.exports = class Game
         @_paused = true
 
     pushTransition: (begin, end)->
-        if begin?
-            beginData      = w.defer()
-            beginData.name = begin
+        if not @_transition?
+            if begin?
+                beginData      = w.defer()
+                beginData.name = begin
 
-        if end?
-            endData        = w.defer()
-            endData.name   = end
+            if end?
+                endData        = w.defer()
+                endData.name   = end
 
-        @_transitions.push begin:beginData, end:endData
+            @_transition = begin:beginData, end:endData
 
-        result = begin:beginData?.promise, end:endData?.promise
+        result = begin:@_transition?.begin?.promise, end:@_transition?.end?.promise
         result.begin ?= w(true)
         result.end ?= w(true)
         return result
 
     popTransition: ->
-        return @_transitions.shift()
+        result = @_transition
+        @_transition = null
+        return result
 
     quit: ->
         @_keyboard.unregisterCommands this
@@ -130,15 +133,19 @@ module.exports = class Game
     _onGameStep: ->
         return w(true) if @paused
 
-        console.log "game loop"
-
         start = Date.now()
         w(true)
             .then     => @keyboard.dispatchCommands()
+            .timeout     1111
             .catch (e)=> console.error "error during keyboard dispatch: #{e.stack}"
+
             .then     => @gameMode.onGameStep()
+            .timeout     1111
             .catch (e)=> console.error "error during game step: #{e.stack}"
+
             .then     => @view.refresh()
+            .timeout     1111
             .catch (e)=> console.error "error during view refresh: #{e.stack}"
+
             .delay       c.animation.frameDuration - (Date.now() - start)
             .done     => @_onGameStep()
