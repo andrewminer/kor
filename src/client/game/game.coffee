@@ -135,17 +135,21 @@ module.exports = class Game
 
         start = Date.now()
         w(true)
-            .then     => @keyboard.dispatchCommands()
-            .timeout     1111
+            .then => @keyboard.dispatchCommands()
+            .timeout 1111
             .catch (e)=> console.error "error during keyboard dispatch: #{e.stack}"
 
-            .then     => @gameMode.onGameStep()
-            .timeout     1111
+            .then =>
+                promises = []
+                for name, gameMode of @_allGameModes
+                    promises.push gameMode.onGameStep()
+                w.all promises
+            .timeout 1111
             .catch (e)=> console.error "error during game step: #{e.stack}"
 
-            .then     => @view.refresh()
-            .timeout     1111
+            .then => @view.refresh()
+            .timeout 1111
             .catch (e)=> console.error "error during view refresh: #{e.stack}"
 
-            .delay       c.animation.frameDuration - (Date.now() - start)
-            .done     => @_onGameStep()
+            .delay c.animation.frameDuration - (Date.now() - start)
+            .done => @_onGameStep()
