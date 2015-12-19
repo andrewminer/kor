@@ -65,6 +65,7 @@ module.exports = class WorldMode extends GameMode
                 in: c.transition.openDoors
 
     enterMode: ->
+        game.keyboard.allowMultiple = false
         game.keyboard.registerCommands @_player
         super
 

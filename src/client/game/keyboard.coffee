@@ -16,8 +16,13 @@ module.exports = class Keyboard
     # Public Methods ###############################################################################
 
     dispatchCommands: ->
-        for command in @_activeCommands
-            w.try command
+        return unless @_activeCommands.length > 0
+
+        if @allowMultiple
+            for command in @_activeCommands
+                w.try command
+        else
+            w.try @command
 
     registerCommands: (object)->
         @_registerCommands object, object.keyUpCommands, @_keyUpCommands
@@ -60,6 +65,13 @@ module.exports = class Keyboard
     # Property Methods #############################################################################
 
     Object.defineProperties @prototype,
+
+        allowMultiple:
+            get: ->
+                return @_allowMultiple
+            set: (value)->
+                @_allowMultiple = !! value
+
         command:
             get: ->
                 return _.last @_activeCommands

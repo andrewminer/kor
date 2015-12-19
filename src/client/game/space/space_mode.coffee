@@ -29,6 +29,7 @@ module.exports = class SpaceMode extends GameMode
         @playerShip.load()
 
     enterMode: ->
+        game.keyboard.allowMultiple = true
         game.keyboard.registerCommands this
         game.keyboard.registerCommands @playerShip
         super
