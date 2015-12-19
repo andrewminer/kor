@@ -30,6 +30,10 @@ module.exports = class ShipView extends View
                 rotate(#{-@model.heading.angleDeg()})
                 translate(#{@model.x}, #{@model.y})
             "
+
+        name = @model.name
+        if @model.isThrusting then name = "#{@model.name}-thrust"
         @shipImage
-            .attr 'xlink:href', "images/entities/#{@model.name}.png"
+            .attr 'xlink:href', "images/entities/#{name}.png"
+
         super

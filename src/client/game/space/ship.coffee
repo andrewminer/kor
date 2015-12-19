@@ -23,6 +23,7 @@ module.exports = class Ship extends Entity
         @rotationRate           = 0
         @starboardLightPosition = new Victor()
         @thrust                 = 0
+        @thrustingFor           = 0
         @type                   = 'ship'
         @velocity               = new Victor()
 

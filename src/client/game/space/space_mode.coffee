@@ -40,6 +40,8 @@ module.exports = class SpaceMode extends GameMode
         super
 
     onGameStep: ->
+        @playerShip.onGameStep()
+
         return unless @sector?
         @sector.onGameStep()
 

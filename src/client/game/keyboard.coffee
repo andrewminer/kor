@@ -16,10 +16,8 @@ module.exports = class Keyboard
     # Public Methods ###############################################################################
 
     dispatchCommands: ->
-        command = @command
-        return unless command?
-
-        w.try command
+        for command in @_activeCommands
+            w.try command
 
     registerCommands: (object)->
         @_registerCommands object, object.keyUpCommands, @_keyUpCommands

@@ -14,6 +14,8 @@ POSITION_ADJUST_THRESHOLD = 0.125
 
 module.exports = class PlayerShip extends Ship
 
+    @::THRUST_DURATION = 8
+
     constructor: (name, x, y)->
         super name, x, y
 
@@ -28,6 +30,7 @@ module.exports = class PlayerShip extends Ship
     # Property Methods #############################################################################
 
     Object.defineProperties @prototype,
+
         keyDownCommands:
             get: ->
                 37: '_rotateLeft'    # left arrow
@@ -39,10 +42,14 @@ module.exports = class PlayerShip extends Ship
                 83: '_rotateReverse' # 's' key
                 87: '_thrust'        # 'w' key
 
+        isThrusting:
+            get: ->
+                @thrustingFor > 0
+
     # Entity Overrides #############################################################################
 
     onGameStep: ->
-        # do nothing. player only updates when moving.
+        @thrustingFor -= 1
 
     # Object Overrides #############################################################################
 
@@ -66,3 +73,4 @@ module.exports = class PlayerShip extends Ship
     _thrust: ->
         velocityAngle = @velocity.angle()
         @velocity.rotate(0).addX(@thrust).rotate(velocityAngle)
+        @thrustingFor = @THRUST_DURATION
