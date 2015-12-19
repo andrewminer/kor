@@ -3,7 +3,7 @@
 # All rights reserved.
 #
 
-Entity = require '../entity'
+Ship   = require './ship'
 Victor = require 'victor'
 
 ########################################################################################################################
@@ -12,16 +12,13 @@ POSITION_ADJUST_THRESHOLD = 0.125
 
 ########################################################################################################################
 
-module.exports = class PlayerShip extends Entity
+module.exports = class PlayerShip extends Ship
 
-    constructor: (x, y)->
-        super x, y
+    constructor: (name, x, y)->
+        super name, x, y
 
-        @heading      = new Victor()
-        @velocity     = new Victor()
-        @maxStep      = 2
-        @ticksPerStep = 20
-        @type         = 'player_ship'
+        @sector = null
+        @type   = 'player_ship'
 
     # Public Methods ###############################################################################
 
@@ -33,27 +30,39 @@ module.exports = class PlayerShip extends Entity
     Object.defineProperties @prototype,
         keyDownCommands:
             get: ->
-                37: '_onWest'  # left arrow
-                38: '_onNorth' # up arrow
-                39: '_onEast'  # right arrow
-                40: '_onSouth' # down arrow
-                65: '_onWest'  # 'a' key
-                68: '_onEast'  # 'd' key
-                83: '_onSouth' # 's' key
-                87: '_onNorth' # 'w' key
+                37: '_rotateLeft'    # left arrow
+                38: '_thrust'        # up arrow
+                39: '_rotateRight'   # right arrow
+                40: '_rotateReverse' # down arrow
+                65: '_rotateLeft'    # 'a' key
+                68: '_rotateRight'   # 'd' key
+                83: '_rotateReverse' # 's' key
+                87: '_thrust'        # 'w' key
 
     # Entity Overrides #############################################################################
 
     onGameStep: ->
         # do nothing. player only updates when moving.
 
-    _updateArea: ->
-        super
-
-        # the top half of the player's box doesn't count for collisions
-        @area.top = @_y
-
     # Object Overrides #############################################################################
 
     toString: ->
         return "PlayerShip{heading:#{@heading}, x:#{@x}, y:#{@y}}"
+
+    # Private Methods ##############################################################################
+
+    _rotateLeft: ->
+        @heading.rotateToDeg @heading.angleDeg() + @rotationRate
+        console.log "rotated by #{@rotationRate}° to #{@heading.angleDeg()}°"
+
+    _rotateRight: ->
+        @heading.rotateToDeg @heading.angleDeg() - @rotationRate
+        console.log "rotated by #{-@rotationRate}° to #{@heading.angleDeg()}°"
+
+    _rotateReverse: ->
+        rotationRate = @rotationRate * (if @heading.angleDeg() - @velocity.angleDeg() <= 180 then -1 else +1)
+        @heading.rotateToDeg @heading.angleDeg() + @rotationRate
+
+    _thrust: ->
+        velocityAngle = @velocity.angle()
+        @velocity.rotate(0).addX(@thrust).rotate(velocityAngle)

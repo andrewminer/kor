@@ -16,8 +16,8 @@ module.exports = class Entity
         @step         = 0
         @ticks        = 0
         @ticksPerStep = 4
-        @x            = x
-        @y            = y
+        @x            = x or 0
+        @y            = y or 0
 
     # Class Methods ################################################################################
 

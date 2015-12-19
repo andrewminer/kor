@@ -1,0 +1,13 @@
+{
+    "displayName": "Cargo Shuttle",
+    "portLightPosition": {
+        "x": 0,
+        "y": 0
+    },
+    "rotationRate": 0.75,
+    "starboardLightPosition": {
+        "x": 0,
+        "y": 0
+    },
+    "thrust": 0.1
+}

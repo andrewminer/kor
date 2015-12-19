@@ -59,7 +59,7 @@ module.exports = class WorldMode extends GameMode
 
     begin: ->
         @pushWorld
-            name: 'cargo_shuttle'
+            name: 'cargo-shuttle'
             enter:
                 out: c.transition.hide
                 in: c.transition.openDoors

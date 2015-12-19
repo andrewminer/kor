@@ -12,7 +12,7 @@ Sector     = require './sector'
 module.exports = class SpaceMode extends GameMode
 
     constructor: (name)->
-        @playerShip = new PlayerShip
+        @playerShip = new PlayerShip 'cargo-shuttle'
         @sector     = null
         super name
 
@@ -26,7 +26,7 @@ module.exports = class SpaceMode extends GameMode
     # GameMode Overrides ###########################################################################
 
     begin: ->
-        return w(true)
+        @playerShip.load()
 
     enterMode: ->
         game.keyboard.registerCommands this
