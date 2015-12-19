@@ -3,11 +3,10 @@
 # All rights reserved.
 #
 
-PlayerView     = require './player_view'
-RoomView       = require './room_view'
-Scales         = require './scales'
-StarfieldView  = require './starfield_view'
-View           = require './view'
+PlayerView = require './player_view'
+RoomView   = require './room_view'
+Scales     = require './scales'
+View       = require './view'
 
 ########################################################################################################################
 
@@ -26,12 +25,8 @@ module.exports = class WorldView extends View
     # View Overrides ###############################################################################
 
     render: ->
-        @starfieldLayer  = @root.append('g').attr('class', 'starfield')
         @roomLayer       = @root.append('g').attr('class', 'room-layer')
         @playerLayer     = @root.append('g').attr('class', 'player-layer')
-
-        @starfieldView = @addChild new StarfieldView @starfieldLayer
-        @starfieldView.render()
 
         super
 

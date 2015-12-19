@@ -19,15 +19,20 @@ module.exports = class Ship extends Entity
         @light                  = null
         @name                   = name
         @maxStep                = 0
-        @portLightPosition      = new Victor()
+        @portLightPosition      = new Victor 0, 0
         @rotationRate           = 0
-        @starboardLightPosition = new Victor()
+        @starboardLightPosition = new Victor 0, 0
         @thrust                 = 0
         @thrustingFor           = 0
         @type                   = 'ship'
-        @velocity               = new Victor()
+        @velocity               = new Victor 0, 0
 
     # Public Methods ###############################################################################
+
+    onGameStep: ->
+        @thrustingFor -= 1
+        @x += @velocity.x
+        @y += @velocity.y
 
     load: ->
         w.promise (resolve, reject)=>

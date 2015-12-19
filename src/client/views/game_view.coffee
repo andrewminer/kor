@@ -4,8 +4,9 @@
 #
 
 GameModeRegistry = require '../game_mode_registry'
-View             = require './view'
+StarfieldView    = require './starfield_view'
 TransitionView   = require './transition_view'
+View             = require './view'
 WorldView        = require './world_view'
 
 ########################################################################################################################
@@ -22,6 +23,10 @@ module.exports = class GameView extends View
     # View Overrides ###############################################################################
 
     render: ->
+        @starfieldLayer = @root.append('g').attr('class', 'starfield')
+        @starfieldView = @addChild new StarfieldView @starfieldLayer
+        @starfieldView.render()
+
         modeViews = @_modeViews
 
         @gameModeLayers = @root.selectAll('.mode-layer').data(@model.allGameModes)

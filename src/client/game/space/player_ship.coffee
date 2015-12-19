@@ -46,11 +46,6 @@ module.exports = class PlayerShip extends Ship
             get: ->
                 @thrustingFor > 0
 
-    # Entity Overrides #############################################################################
-
-    onGameStep: ->
-        @thrustingFor -= 1
-
     # Object Overrides #############################################################################
 
     toString: ->
@@ -58,19 +53,35 @@ module.exports = class PlayerShip extends Ship
 
     # Private Methods ##############################################################################
 
+    _normalizeAngle: (angle)->
+        while angle > 180
+            angle -= 360
+        while angle < -180
+            angle += 360
+        return angle
+
     _rotateLeft: ->
-        @heading.rotateToDeg @heading.angleDeg() + @rotationRate
+        @heading.rotateToDeg @heading.angleDeg() - @rotationRate
         console.log "rotated by #{@rotationRate}° to #{@heading.angleDeg()}°"
 
     _rotateRight: ->
-        @heading.rotateToDeg @heading.angleDeg() - @rotationRate
+        @heading.rotateToDeg @heading.angleDeg() + @rotationRate
         console.log "rotated by #{-@rotationRate}° to #{@heading.angleDeg()}°"
 
     _rotateReverse: ->
-        rotationRate = @rotationRate * (if @heading.angleDeg() - @velocity.angleDeg() <= 180 then -1 else +1)
-        @heading.rotateToDeg @heading.angleDeg() + @rotationRate
+        targetAngle = @_normalizeAngle @velocity.angleDeg() + 180
+
+        rotationRate = Math.min(@rotationRate, Math.abs(targetAngle - @heading.angleDeg()))
+        left = @_normalizeAngle @heading.angleDeg() - rotationRate
+        right = @_normalizeAngle @heading.angleDeg() + rotationRate
+
+        if Math.abs(targetAngle - left) < Math.abs(targetAngle - right)
+            @heading.rotateToDeg left
+        else
+            @heading.rotateToDeg right
 
     _thrust: ->
-        velocityAngle = @velocity.angle()
-        @velocity.rotate(0).addX(@thrust).rotate(velocityAngle)
+        thrustVector = new Victor @thrust, 0
+        thrustVector.rotateTo @heading.angle()
+        @velocity.add thrustVector
         @thrustingFor = @THRUST_DURATION
