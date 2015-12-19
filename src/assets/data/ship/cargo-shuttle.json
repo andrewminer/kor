@@ -4,10 +4,10 @@
         "x": 0,
         "y": 0
     },
-    "rotationRate": 0.75,
+    "rotationRate": 1.5,
     "starboardLightPosition": {
         "x": 0,
         "y": 0
     },
-    "thrust": 0.1
+    "thrust": 0.05
 }

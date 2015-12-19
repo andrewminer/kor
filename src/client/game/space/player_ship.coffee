@@ -62,11 +62,9 @@ module.exports = class PlayerShip extends Ship
 
     _rotateLeft: ->
         @heading.rotateToDeg @heading.angleDeg() - @rotationRate
-        console.log "rotated by #{@rotationRate}° to #{@heading.angleDeg()}°"
 
     _rotateRight: ->
         @heading.rotateToDeg @heading.angleDeg() + @rotationRate
-        console.log "rotated by #{-@rotationRate}° to #{@heading.angleDeg()}°"
 
     _rotateReverse: ->
         targetAngle = @_normalizeAngle @velocity.angleDeg() + 180
