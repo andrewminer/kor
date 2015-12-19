@@ -19,6 +19,7 @@ module.exports = class Ship extends Entity
         @light                  = null
         @name                   = name
         @maxStep                = 0
+        @maxSpeed               = 0
         @portLightPosition      = new Victor 0, 0
         @rotationRate           = 0
         @starboardLightPosition = new Victor 0, 0
@@ -47,6 +48,7 @@ module.exports = class Ship extends Entity
 
     _unpackData: (data)->
         @displayName            = data.displayName
+        @maxSpeed               = parseFloat data.maxSpeed
         @portLightPosition      = @_unpackVector data.portLightPosition
         @rotationRate           = parseFloat data.rotationRate
         @starboardLightPosition = @_unpackVector data.starboardLightPosition

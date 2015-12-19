@@ -81,5 +81,10 @@ module.exports = class PlayerShip extends Ship
     _thrust: ->
         thrustVector = new Victor @thrust, 0
         thrustVector.rotateTo @heading.angle()
-        @velocity.add thrustVector
-        @thrustingFor = @THRUST_DURATION
+        newVelocity = @velocity.clone().add thrustVector
+
+        if newVelocity.length() < @maxSpeed
+            @thrustingFor = @THRUST_DURATION
+            @velocity.add thrustVector
+
+

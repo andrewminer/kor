@@ -1,10 +1,11 @@
 {
     "displayName": "Cargo Shuttle",
+    "maxSpeed": 3.2,
     "portLightPosition": {
         "x": 0,
         "y": 0
     },
-    "rotationRate": 1.5,
+    "rotationRate": 3,
     "starboardLightPosition": {
         "x": 0,
         "y": 0
