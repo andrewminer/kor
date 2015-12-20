@@ -7,11 +7,9 @@
 
 module.exports = class Entity
 
-    nextId = 0
-
     constructor: (x, y)->
         @area         = {}
-        @id           = nextId++
+        @id           = _.uniqueId 'entity-'
         @maxStep      = 0
         @step         = 0
         @ticks        = 0
@@ -43,22 +41,23 @@ module.exports = class Entity
 
     # Property Methods #############################################################################
 
+    getX: ->
+        return @_x
+
+    setX: (v)->
+        @_x = v
+        @_updateArea()
+
+    getY: ->
+        return @_y
+
+    setY: (v)->
+        @_y = v
+        @_updateArea()
+
     Object.defineProperties @prototype,
-        x:
-            get: ->
-                return @_x
-
-            set: (v)->
-                @_x = v
-                @_updateArea()
-
-        y:
-            get: ->
-                return @_y
-
-            set: (v)->
-                @_y = v
-                @_updateArea()
+        x: { get:@::getX, set:@::setX }
+        y: { get:@::getY, set:@::setY }
 
     # Overrideable Methods #########################################################################
 

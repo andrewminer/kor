@@ -13,7 +13,7 @@ module.exports = class SpaceMode extends GameMode
 
     constructor: (name)->
         @playerShip = new PlayerShip 'cargo-shuttle'
-        @sector     = null
+        @sector     = new Sector 0, 0
         super name
 
     # Property Methods #############################################################################
@@ -26,7 +26,9 @@ module.exports = class SpaceMode extends GameMode
     # GameMode Overrides ###########################################################################
 
     begin: ->
-        @playerShip.load()
+        w.all @sector.load(), @playerShip.load()
+            .then =>
+                @playerShip.enterSector @sector
 
     enterMode: ->
         game.keyboard.allowMultiple = true
@@ -37,13 +39,10 @@ module.exports = class SpaceMode extends GameMode
     leaveMode: ->
         game.keyboard.unregisterCommands @playerShip
         game.keyboard.unregisterCommands this
-
         super
 
     onGameStep: ->
         @playerShip.onGameStep()
-
-        return unless @sector?
         @sector.onGameStep()
 
     # Private Methods ##############################################################################

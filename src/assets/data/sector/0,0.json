@@ -3,17 +3,19 @@
     "planets": [
         {
             "name": "Sol",
+            "image": "sun",
             "angle": 0,
             "orbit": 0,
-            "radius": 1000,
-            "velocity": 0,
+            "radius": 5,
+            "speed": 0,
             "planets": [
                 {
                     "name": "Mercury",
+                    "image": "mercury",
                     "angle": 0,
                     "orbit": 0.39,
                     "radius": 0.38,
-                    "velocity": 4.14
+                    "speed": 4.14
                 }
             ]
         }

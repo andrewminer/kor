@@ -36,6 +36,11 @@ exports.room = {}
 exports.room.width = 16
 exports.room.height = 12
 
+exports.space             = {}
+exports.space.orbitRatio  = 750
+exports.space.radiusRatio = 20
+exports.space.speedRatio  = 360 / 5 / 60 / exports.animation.frameRate
+
 exports.speed = {}
 exports.speed.slow   = 1000
 exports.speed.normal = exports.speed.slow / 2
