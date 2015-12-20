@@ -115,12 +115,14 @@ module.exports = class SpaceModeView extends View
                     .attr 'width', c.tile.height / 3
                     .attr 'xlink:href', "/images/entities/#{planet.image}.png"
 
+        zIndex = 1
         markers
             .attr 'transform', (planet)=>
                 x = Math.max viewport.left, Math.min viewport.right - c.tile.width, planet.x
                 y = Math.max viewport.top, Math.min viewport.bottom - c.tile.height, planet.y
                 return "translate(#{x},#{y})"
             .each (planet)->
+                d3.select(this).style 'z-index', zIndex++
                 toPlanet = new Victor(planet.x, planet.y).subtract sectorOffset
                 pointer = d3.select(this).select('image.pointer')
                 pointer.attr 'transform', "rotate(#{toPlanet.angleDeg()}, #{c.tile.width / 2}, #{c.tile.height / 2})"
