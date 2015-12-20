@@ -26,6 +26,7 @@ module.exports = class PlayerShip extends Ship
 
     enterSector: (sector)->
         @sector = sector
+        @sector.onPlayerShipEntered this
 
     # Property Methods #############################################################################
 

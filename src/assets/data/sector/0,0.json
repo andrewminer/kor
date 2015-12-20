@@ -71,7 +71,7 @@
         }
     ],
     "spawn": {
-        "angle": 0,
-        "orbit": 3
+        "angle": 0.00,
+        "orbit": 0.40
     }
 }

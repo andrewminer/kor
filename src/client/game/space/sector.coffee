@@ -25,7 +25,9 @@ module.exports = class Sector
 
     onPlayerShipEntered: (playerShip)->
         position = new Victor @spawn.orbit
-        playerShip.x
+        position.rotateToDeg @spawn.angle
+        playerShip.x = position.x
+        playerShip.y = position.y
 
     load: ->
         w.promise (resolve, reject)=>
