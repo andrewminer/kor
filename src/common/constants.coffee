@@ -9,9 +9,10 @@ exports.animation = {}
 exports.animation.frameRate     = 32
 exports.animation.frameDuration = 1000 / exports.animation.frameRate
 
-exports.canvas = {}
-exports.canvas.width = 1024
+exports.canvas        = {}
+exports.canvas.width  = 1024
 exports.canvas.height = 768
+exports.canvas.max    = Math.max(exports.canvas.width, exports.canvas.height)
 
 exports.direction = {}
 exports.direction.north = 'n'
@@ -46,6 +47,10 @@ exports.speed.slow   = 1000
 exports.speed.normal = exports.speed.slow / 2
 exports.speed.fast   = exports.speed.normal / 2
 exports.speed.block  = 75
+
+exports.tether       = {}
+exports.tether.max   = 0.4
+exports.tether.speed = exports.canvas.max * exports.tether.max / 60 / exports.animation.frameRate
 
 exports.tile = {}
 exports.tile.width = 64

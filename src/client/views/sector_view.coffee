@@ -3,7 +3,8 @@
 # All rights reserved.
 #
 
-View = require './view'
+Victor = require 'victor'
+View   = require './view'
 
 ########################################################################################################################
 
@@ -16,10 +17,11 @@ module.exports = class SectorView extends View
     # View Overrides ###############################################################################
 
     render: ->
-        @planetBox = @root.append 'g'
+        @cameraLayer = @root.append 'g'
+            .attr 'class', 'camera-layer'
+        @planetBox = @cameraLayer.append 'g'
             .attr 'class', 'planet-box'
-
-        @childPlanetLayer = @root.append 'g'
+        @childPlanetLayer = @cameraLayer.append 'g'
             .attr 'class', 'child-planet-layer'
         super
 
