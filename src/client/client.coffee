@@ -12,6 +12,7 @@ if typeof(global) is 'undefined'
 global._  = require '../common/underscore'
 global.$  = require 'jquery'
 global.c  = require '../common/constants'
+global.π  = Math.PI
 global.d3 = require 'd3'
 global.w  = require 'when'
 

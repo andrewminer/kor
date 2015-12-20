@@ -3,6 +3,7 @@
 # All rights reserved.
 #
 
+Rectangle  = require '../../common/rectangle'
 SectorView = require './sector_view'
 ShipView   = require './ship_view'
 Victor     = require 'victor'
@@ -35,10 +36,15 @@ module.exports = class SpaceModeView extends View
         @shipView = @addChild new ShipView @shipLayer, @model.playerShip
         @shipView.render()
 
+        @markerLayer = @cameraLayer.append 'g'
+            .attr 'class', 'marker-layer'
+
         super
 
     refresh: ->
         @_followPlayerShip()
+        @_refreshPlanetMarkers()
+
         super
 
     # Private Methods ##############################################################################
@@ -67,3 +73,56 @@ module.exports = class SpaceModeView extends View
             @sectorOffset.y -= Math.min c.tether.speed, @sectorOffset.y - @model.playerShip.y
 
         @cameraLayer.attr 'transform', "translate(#{-@sectorOffset.x}, #{-@sectorOffset.y})"
+
+    _refreshPlanetMarkers: ->
+        viewport = Rectangle.atCenter @sectorOffset.x, @sectorOffset.y, c.canvas.width, c.canvas.height
+        sectorOffset = @sectorOffset
+
+        allPlanets = []
+        if @model?.sector?
+            allPlanets = @model.sector.findAllPlanets depth:2
+
+        distantPlanets = []
+        for planet in allPlanets
+            planetBox = Rectangle.atCenter planet.x, planet.y, planet.radius * 2, planet.radius * 2
+            if not Rectangle.intersect viewport, planetBox
+                distantPlanets.push planet
+
+        distantPlanets.sort (a, b)->
+            distanceSqA = new Victor(a.x, a.y).distanceSq(sectorOffset)
+            distanceSqB = new Victor(b.x, b.y).distanceSq(sectorOffset)
+
+            if distanceSqA isnt distanceSqB
+                return if distanceSqA < distanceSqB then -1 else +1
+            return 0
+
+        markers = @markerLayer.selectAll('.planet-marker').data(distantPlanets, (p)-> p.id)
+        markers.enter().append 'g'
+            .attr 'class', 'planet-marker'
+            .each (planet)->
+                markerBox = d3.select this
+                pointerImage = markerBox.append 'image'
+                    .attr 'class', 'pointer'
+                    .attr 'transform', "translate(#{c.tile.width / 2}, #{c.tile.height / 2})"
+                    .attr 'height', c.tile.height
+                    .attr 'width', c.tile.width
+                    .attr 'xlink:href', '/images/planet-marker.png'
+
+                planetImage = markerBox.append 'image'
+                    .attr 'class', 'planet'
+                    .attr 'transform', "translate(#{c.tile.width / 3}, #{c.tile.height / 3})"
+                    .attr 'height', c.tile.height / 3
+                    .attr 'width', c.tile.height / 3
+                    .attr 'xlink:href', "/images/entities/#{planet.image}.png"
+
+        markers
+            .attr 'transform', (planet)=>
+                x = Math.max viewport.left, Math.min viewport.right - c.tile.width, planet.x
+                y = Math.max viewport.top, Math.min viewport.bottom - c.tile.height, planet.y
+                return "translate(#{x},#{y})"
+            .each (planet)->
+                toPlanet = new Victor(planet.x, planet.y).subtract sectorOffset
+                pointer = d3.select(this).select('image.pointer')
+                pointer.attr 'transform', "rotate(#{toPlanet.angleDeg()}, #{c.tile.width / 2}, #{c.tile.height / 2})"
+
+        markers.exit().remove()

@@ -10,6 +10,8 @@ View = require './view'
 
 module.exports = class PlayerView extends View
 
+    # View Overrides ###############################################################################
+
     refresh: ->
         data  = if @model.x? and @model.y? then [@model] else []
         origin = x:Scales.room.x(@model.x), y:Scales.room.x(@model.y)

@@ -24,6 +24,18 @@ module.exports = class Sector
 
     # Public Methods ###############################################################################
 
+    findAllPlanets: (options={})->
+        options.depth   ?= Number.MAX_VALUE
+        options.planet  ?= this
+        options.results ?= []
+        return if options.depth is 0
+
+        for childPlanet in options.planet.planets
+            options.results.push childPlanet
+            @findAllPlanets depth:options.depth - 1, planet:childPlanet, results:options.results
+
+        return options.results
+
     onPlayerShipEntered: (playerShip)->
         @playerShip = playerShip
 
