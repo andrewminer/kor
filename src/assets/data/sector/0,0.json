@@ -2,20 +2,70 @@
     "name": "Sol",
     "planets": [
         {
-            "name": "Sol",
-            "image": "sun",
-            "angle": 0,
-            "orbit": 0,
-            "radius": 5,
-            "speed": 0,
+            "name":   "Sol",
+            "image":  "sun",
+            "angle":  0.00,
+            "orbit":  0.00,
+            "radius": 5.00,
+            "speed":  0.00,
             "planets": [
                 {
-                    "name": "Mercury",
-                    "image": "mercury",
-                    "angle": 0,
-                    "orbit": 0.39,
+                    "name":   "Mercury",
+                    "image":  "mercury",
+                    "orbit":  0.39,
                     "radius": 0.38,
-                    "speed": 4.14
+                    "speed":  4.14
+                }, {
+                    "name":   "Venus",
+                    "image":  "venus",
+                    "orbit":  0.72,
+                    "radius": 0.94,
+                    "speed":  1.17
+                }, {
+                    "name":   "Earth",
+                    "image":  "earth",
+                    "orbit":  1.00,
+                    "radius": 1.00,
+                    "speed":  1.00,
+                    "planets": [
+                        {
+                            "name":   "Luna",
+                            "image":  "moon",
+                            "orbit":  0.0003,
+                            "radius": 0.27,
+                            "speed":  0.03
+                        }
+                    ]
+                }, {
+                    "name":   "Mars",
+                    "image":  "mars",
+                    "orbit":  2.10,
+                    "radius": 0.53,
+                    "speed":  0.80
+                }, {
+                    "name":   "Jupiter",
+                    "image":  "jupiter",
+                    "orbit":  5.20,
+                    "radius": 11.20,
+                    "speed":  0.43
+                }, {
+                    "name":   "Saturn",
+                    "image":  "saturn",
+                    "orbit":  9.58,
+                    "radius": 9.44,
+                    "speed":  0.23
+                }, {
+                    "name":   "Neptune",
+                    "image":  "neptune",
+                    "orbit":  30.04,
+                    "radius": 3.88,
+                    "speed":  0.18
+                }, {
+                    "name":   "Pluto",
+                    "image":  "pluto",
+                    "orbit":  39.40,
+                    "radius": 0.19,
+                    "speed":  0.16
                 }
             ]
         }

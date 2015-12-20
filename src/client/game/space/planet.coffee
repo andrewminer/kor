@@ -36,14 +36,14 @@ module.exports = class Planet extends Entity
 
     _recomputePosition: ->
         position = new Victor @orbit, 0
-        position.rotateToDeg @ticks * @speed
+        position.rotateToDeg (@ticks * @speed) + @angle
         @x = position.x
         @y = position.y
 
     _unpackData: (data)->
         @name   = data.name
         @image  = data.image
-        @angle  = parseFloat data.angle
+        @angle  = if _.isString(data.angle) then parseFloat(data.angle) else Math.random() * 360.0
         @orbit  = c.space.orbitRatio * parseFloat data.orbit
         @radius = c.space.radiusRatio * parseFloat data.radius
         @speed  = c.space.speedRatio * parseFloat data.speed
