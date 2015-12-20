@@ -93,7 +93,7 @@ module.exports = class SpaceModeView extends View
             distanceSqB = new Victor(b.x, b.y).distanceSq(sectorOffset)
 
             if distanceSqA isnt distanceSqB
-                return if distanceSqA < distanceSqB then -1 else +1
+                return if distanceSqA > distanceSqB then -1 else +1
             return 0
 
         markers = @markerLayer.selectAll('.planet-marker').data(distantPlanets, (p)-> p.id)

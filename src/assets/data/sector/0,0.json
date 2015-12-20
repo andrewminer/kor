@@ -6,7 +6,7 @@
             "image":  "sun",
             "angle":  0.00,
             "orbit":  0.00,
-            "radius": 5.00,
+            "radius": 100.00,
             "speed":  0.00,
             "planets": [
                 {
@@ -31,11 +31,11 @@
                         {
                             "name":   "Luna",
                             "image":  "moon",
-                            "orbit":  0.05,
-                            "accurate-orbit":  0.0003,
+                            "orbit":  0.006,
+                            "real-orbit":  0.0003,
                             "radius": 0.27,
-                            "speed":  5.00,
-                            "accurage-speed": 0.03
+                            "speed":  18.84,
+                            "real-speed": 0.03
                         }
                     ]
                 }, {

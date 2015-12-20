@@ -38,7 +38,7 @@ exports.room.width = 16
 exports.room.height = 12
 
 exports.space             = {}
-exports.space.orbitRatio  = 750
+exports.space.orbitRatio  = 6000
 exports.space.radiusRatio = 20
 exports.space.speedRatio  = 360 / 20 / 60 / exports.animation.frameRate
 
@@ -50,7 +50,7 @@ exports.speed.block  = 75
 
 exports.tether       = {}
 exports.tether.max   = 0.4
-exports.tether.speed = exports.canvas.max * exports.tether.max / 60 / exports.animation.frameRate
+exports.tether.speed = exports.canvas.max * exports.tether.max / 30 / exports.animation.frameRate
 
 exports.tile = {}
 exports.tile.width = 64
