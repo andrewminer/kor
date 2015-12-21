@@ -14,9 +14,11 @@ module.exports = class Ship extends Entity
         if not name? then throw new Error 'name is required'
         super x, y
 
+        @acceleration           = new Victor 0, 0
         @displayName            = ''
         @heading                = new Victor 1, 0
         @light                  = null
+        @mass                   = 1
         @name                   = name
         @maxStep                = 0
         @maxSpeed               = 0
@@ -24,16 +26,21 @@ module.exports = class Ship extends Entity
         @rotationRate           = 0
         @starboardLightPosition = new Victor 0, 0
         @thrust                 = 0
-        @thrustingFor           = 0
         @type                   = 'ship'
         @velocity               = new Victor 0, 0
 
     # Public Methods ###############################################################################
 
     onGameStep: ->
-        @thrustingFor -= 1
+        @velocity.add @acceleration
+
+        if @velocity.length() > @maxSpeed
+            @velocity.multiplyScalar @maxSpeed / @velocity.length()
+
         @x += @velocity.x
         @y += @velocity.y
+
+        @acceleration = new Victor 0, 0
 
     load: ->
         w.promise (resolve, reject)=>
@@ -43,6 +50,14 @@ module.exports = class Ship extends Entity
                 else
                     @_unpackData data
                     resolve this
+
+    # Property Methods #############################################################################
+
+    Object.defineProperties @prototype,
+
+        isAtMaxSpeed:
+            get: ->
+                return Math.abs(@velocity.length() - @maxSpeed) < ε
 
     # Private Methods ##############################################################################
 

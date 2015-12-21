@@ -17,6 +17,16 @@ module.exports = class Planet extends Entity
         @_unpackData data
         @_recomputePosition()
 
+    # Public Methods ###############################################################################
+
+    applyGravitation: (ship)->
+        toPlanet = new Victor(@x, @y).subtract new Victor(ship.x, ship.y)
+        r = Math.max toPlanet.length(), @radius * 2
+        g = c.space.G * @mass / (r * r)
+        a = new Victor g / ship.mass, 0
+        a.rotateTo toPlanet.angle()
+        ship.acceleration.add a
+
     # Property Methods #############################################################################
 
     Object.defineProperties @prototype,
@@ -43,7 +53,8 @@ module.exports = class Planet extends Entity
     _unpackData: (data)->
         @name   = data.name
         @image  = data.image
-        @angle  = if _.isString(data.angle) then parseFloat(data.angle) else Math.random() * 360.0
+        @angle  = if data.angle? then parseFloat(data.angle) else Math.random() * 360.0
+        @mass   = c.space.massRatio * parseFloat data.mass
         @orbit  = c.space.orbitRatio * parseFloat data.orbit
         @radius = c.space.radiusRatio * parseFloat data.radius
         @speed  = c.space.speedRatio * parseFloat data.speed

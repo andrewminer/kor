@@ -54,8 +54,9 @@ module.exports = class Sector
                     resolve this
 
     onGameStep: ->
-        for planet in @planets
+        for planet in @findAllPlanets()
             planet.onGameStep()
+            planet.applyGravitation @playerShip
 
     # Property Methods #############################################################################
 

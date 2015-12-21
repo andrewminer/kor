@@ -42,8 +42,8 @@ module.exports = class SpaceMode extends GameMode
         super
 
     onGameStep: ->
-        @playerShip.onGameStep()
         @sector.onGameStep()
+        @playerShip.onGameStep()
 
     # Private Methods ##############################################################################
 

@@ -13,6 +13,7 @@ global._  = require '../common/underscore'
 global.$  = require 'jquery'
 global.c  = require '../common/constants'
 global.π  = Math.PI
+global.ε  = 0.0001
 global.d3 = require 'd3'
 global.w  = require 'when'
 

@@ -12,18 +12,22 @@
                 {
                     "name":   "Mercury",
                     "image":  "mercury",
+                    "mass":   0.05,
                     "orbit":  0.39,
                     "radius": 0.38,
                     "speed":  4.14
                 }, {
                     "name":   "Venus",
                     "image":  "venus",
+                    "mass":   0.82,
                     "orbit":  0.72,
                     "radius": 0.94,
                     "speed":  1.17
                 }, {
                     "name":   "Earth",
                     "image":  "earth",
+                    "angle":  -30.00,
+                    "mass":   1.00,
                     "orbit":  1.00,
                     "radius": 1.00,
                     "speed":  1.00,
@@ -31,6 +35,7 @@
                         {
                             "name":   "Luna",
                             "image":  "moon",
+                            "mass":   0.12,
                             "orbit":  0.006,
                             "real-orbit":  0.0003,
                             "radius": 0.27,
@@ -41,30 +46,42 @@
                 }, {
                     "name":   "Mars",
                     "image":  "mars",
+                    "mass":   0.11,
                     "orbit":  2.10,
                     "radius": 0.53,
                     "speed":  0.80
                 }, {
                     "name":   "Jupiter",
                     "image":  "jupiter",
+                    "mass":   317.80,
                     "orbit":  5.20,
                     "radius": 11.20,
                     "speed":  0.43
                 }, {
                     "name":   "Saturn",
                     "image":  "saturn",
+                    "mass":   95.20,
                     "orbit":  9.58,
                     "radius": 9.44,
                     "speed":  0.23
                 }, {
                     "name":   "Neptune",
                     "image":  "neptune",
+                    "mass":   17.10,
                     "orbit":  30.04,
                     "radius": 3.88,
                     "speed":  0.18
                 }, {
+                    "name":   "Uranus",
+                    "image":  "uranus",
+                    "mass":   14.50,
+                    "orbit":  30.05,
+                    "radius": 4.01,
+                    "speed":  0.18
+                }, {
                     "name":   "Pluto",
                     "image":  "pluto",
+                    "mass":   0.01,
                     "orbit":  39.40,
                     "radius": 0.19,
                     "speed":  0.16
@@ -73,7 +90,7 @@
         }
     ],
     "spawn": {
-        "angle": 0.00,
-        "orbit": 0.40
+        "angle": -30.00,
+        "orbit": 0.99
     }
 }

@@ -19,8 +19,9 @@ module.exports = class PlayerShip extends Ship
     constructor: (name, x, y)->
         super name, x, y
 
-        @sector = null
-        @type   = 'player_ship'
+        @sector       = null
+        @thrustingFor = 0
+        @type         = 'player_ship'
 
     # Public Methods ###############################################################################
 
@@ -46,6 +47,18 @@ module.exports = class PlayerShip extends Ship
         isThrusting:
             get: ->
                 @thrustingFor > 0
+
+    # Entity Overrides #############################################################################
+
+    onGameStep: ->
+        @thrustingFor -= 1
+
+        if @isThrusting
+            thrustVector = new Victor @thrust, 0
+            thrustVector.rotateTo @heading.angle()
+            @acceleration.add thrustVector
+
+        super
 
     # Object Overrides #############################################################################
 
@@ -80,12 +93,4 @@ module.exports = class PlayerShip extends Ship
             @heading.rotateToDeg right
 
     _thrust: ->
-        thrustVector = new Victor @thrust, 0
-        thrustVector.rotateTo @heading.angle()
-        newVelocity = @velocity.clone().add thrustVector
-
-        if newVelocity.length() < @maxSpeed
-            @thrustingFor = @THRUST_DURATION
-            @velocity.add thrustVector
-
-
+        @thrustingFor = @THRUST_DURATION
