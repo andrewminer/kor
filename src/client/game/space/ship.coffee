@@ -51,14 +51,6 @@ module.exports = class Ship extends Entity
                     @_unpackData data
                     resolve this
 
-    # Property Methods #############################################################################
-
-    Object.defineProperties @prototype,
-
-        isAtMaxSpeed:
-            get: ->
-                return Math.abs(@velocity.length() - @maxSpeed) < ε
-
     # Private Methods ##############################################################################
 
     _unpackData: (data)->

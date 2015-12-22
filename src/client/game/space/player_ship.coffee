@@ -54,7 +54,7 @@ module.exports = class PlayerShip extends Ship
         @thrustingFor -= 1
 
         if @isThrusting
-            thrustVector = new Victor @thrust, 0
+            thrustVector = new Victor @_availableThrust(), 0
             thrustVector.rotateTo @heading.angle()
             @acceleration.add thrustVector
 
@@ -66,6 +66,17 @@ module.exports = class PlayerShip extends Ship
         return "PlayerShip{heading:#{@heading}, x:#{@x}, y:#{@y}}"
 
     # Private Methods ##############################################################################
+
+    _availableThrust: ->
+        thrustVector = new Victor @thrust, 0
+        thrustVector.rotateTo @heading.angle()
+        currentSpeed = @velocity.length()
+        adjustedSpeed = @velocity.clone().add(thrustVector).length()
+
+        if adjustedSpeed > @maxSpeed
+            return Math.max 0, @maxSpeed - currentSpeed
+        else
+            return @thrust
 
     _normalizeAngle: (angle)->
         while angle > 180
@@ -93,4 +104,7 @@ module.exports = class PlayerShip extends Ship
             @heading.rotateToDeg right
 
     _thrust: ->
-        @thrustingFor = @THRUST_DURATION
+        availableThrust = @_availableThrust()
+        console.log "availableThrust: #{availableThrust}"
+        if @_availableThrust() > 0
+            @thrustingFor = @THRUST_DURATION

@@ -19,13 +19,16 @@ module.exports = class Planet extends Entity
 
     # Public Methods ###############################################################################
 
-    applyGravitation: (ship)->
-        toPlanet = new Victor(@x, @y).subtract new Victor(ship.x, ship.y)
-        r = Math.max toPlanet.length(), @radius * 2
-        g = c.space.G * @mass / (r * r)
-        a = new Victor g / ship.mass, 0
-        a.rotateTo toPlanet.angle()
-        ship.acceleration.add a
+    # Disabled for now as the effects of gravitation as it's implemented don't make for a very good game experience.
+    # This code may be re-enabled if better ideas of how to take advantage of it come up.
+    #
+    # applyGravitation: (ship)->
+    #     toPlanet = new Victor(@x, @y).subtract new Victor(ship.x, ship.y)
+    #     r = Math.max toPlanet.length(), @radius * 2
+    #     g = c.space.G * @mass / (r * r)
+    #     a = new Victor g / ship.mass, 0
+    #     a.rotateTo toPlanet.angle()
+    #     ship.acceleration.add a
 
     # Property Methods #############################################################################
 
