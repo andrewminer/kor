@@ -105,6 +105,5 @@ module.exports = class PlayerShip extends Ship
 
     _thrust: ->
         availableThrust = @_availableThrust()
-        console.log "availableThrust: #{availableThrust}"
         if @_availableThrust() > 0
             @thrustingFor = @THRUST_DURATION

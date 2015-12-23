@@ -1,6 +1,6 @@
 {
     "displayName": "Cargo Shuttle",
-    "maxSpeed": 3.2,
+    "maxSpeed": 12,
     "portLightPosition": {
         "x": 0,
         "y": 0
@@ -10,5 +10,5 @@
         "x": 0,
         "y": 0
     },
-    "thrust": 0.05
+    "thrust": 0.15
 }

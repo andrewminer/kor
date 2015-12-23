@@ -29,6 +29,14 @@ exports.event.game.pause  = 'game:pause'
 exports.event.game.resume = 'game:resume'
 exports.event.game.end    = 'game:end'
 
+exports.orbit                   = {}
+exports.orbit.distanceRatio     = 4
+exports.orbit.maxCaptureSpeedSq = 3 * 3
+exports.orbit.maxSpeed          = 4
+exports.orbit.minSpeed          = 2
+exports.orbit.orbitIncrement    = 2
+exports.orbit.velocityIncrement = 0.5
+
 exports.opacity = {}
 exports.opacity.hidden = 1e-6
 exports.opacity.shown  = 1

@@ -55,6 +55,7 @@ module.exports = class Sector
 
     onGameStep: ->
         for planet in @findAllPlanets()
+            planet.captureShip @playerShip
             planet.onGameStep()
 
     # Property Methods #############################################################################

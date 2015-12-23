@@ -8,6 +8,7 @@
             "orbit":  0.00,
             "radius": 100.00,
             "speed":  0.00,
+            "shipsOrbit": false,
             "planets": [
                 {
                     "name":   "Mercury",
