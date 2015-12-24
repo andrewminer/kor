@@ -22,6 +22,7 @@ module.exports = class Ship extends Entity
         @name                   = name
         @maxStep                = 0
         @maxSpeed               = 0
+        @orbit                  = null
         @portLightPosition      = new Victor 0, 0
         @rotationRate           = 0
         @starboardLightPosition = new Victor 0, 0

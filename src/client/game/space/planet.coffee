@@ -48,7 +48,9 @@ module.exports = class Planet extends Entity
             get: -> return @name
 
         velocity:
-            get: -> new Victor(@speed, 0).rotateToDeg(@angle)
+            get: ->
+                speedPx = @speed / 360.0 * (2.0 * π * @orbit)
+                new Victor(speedPx, 0).rotateToDeg((@ticks * @speed) + @angle + 90)
 
     # Entity Overrides #############################################################################
 
@@ -64,9 +66,8 @@ module.exports = class Planet extends Entity
             if orbit.isValid
                 index += 1
             else
-                console.log "cancelling orbit"
+                orbit.cancel()
                 @orbitingShips.splice index, 1
-                orbit.ship.velocity = orbit.velocity
 
         for planet in @planets
             planet.onGameStep()

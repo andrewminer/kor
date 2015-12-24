@@ -16,13 +16,14 @@ module.exports = class Orbit
         @planet = planet
         @ship   = ship
 
-        @_radius   = 0
+        @radius   = 0
         @_angleDeg = 0
         @_speed    = 0
 
         @_computeInitialCoordinates()
         @onGameStep()
 
+        @ship.orbit    = this
         @ship.velocity = new Victor 0, 0
 
     # Class Methods ################################################################################
@@ -42,9 +43,13 @@ module.exports = class Orbit
 
     # Public Methods ###############################################################################
 
+    cancel: ->
+        @ship.velocity = @velocity
+        @ship.orbit = null
+
     onGameStep: ->
         @_angleDeg += @_speed
-        position = new Victor(@_radius).rotateToDeg(@_angleDeg)
+        position = new Victor(@radius).rotateToDeg(@_angleDeg)
 
         @ship.x       = @planet.x + position.x
         @ship.y       = @planet.y + position.y
@@ -67,14 +72,14 @@ module.exports = class Orbit
     _computeInitialCoordinates: ->
         toShip           = new Victor(@ship.x, @ship.y).subtract new Victor(@planet.x, @planet.y)
         relativeVelocity = @ship.velocity.clone().subtract @planet.velocity
-        orbitalSpeed     = relativeVelocity.length() * 360 / 2 * π * @_radius
+        orbitalSpeed     = relativeVelocity.length() * 360 / 2 * π * @radius
 
-        @_radius         = Math.abs toShip.length()
+        @radius         = Math.abs toShip.length()
         @_angleDeg       = toShip.angleDeg()
         @_speed          = Math.max c.orbit.minSpeed, Math.min c.orbit.maxSpeed, orbitalSpeed
         console.log "
             toShip: #{toShip},
-            radius: #{@_radius},
+            radius: #{@radius},
             angle: #{@_angleDeg},
             velocity: #{@ship.velocity.length()}
             speed: #{@_speed}

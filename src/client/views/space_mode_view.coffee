@@ -16,7 +16,8 @@ module.exports = class SpaceModeView extends View
     constructor: (root, model)->
         super root, model
 
-        @sectorOffset = new Victor 0, 0
+        @sectorOffset = null
+        @orbitRadius = null
 
     # View Overrides ###############################################################################
 
@@ -51,30 +52,53 @@ module.exports = class SpaceModeView extends View
 
     _followPlayerShip: ->
         return unless @model.playerShip?
+        return unless @model.playerShip.x isnt 0 and @model.playerShip.y isnt 0
 
-        tetherWidth = c.canvas.width * c.tether.max
-        if @model.playerShip.x > @sectorOffset.x + tetherWidth
-            @sectorOffset.x = @model.playerShip.x - tetherWidth
-        else if @model.playerShip.x < @sectorOffset.x - tetherWidth
-            @sectorOffset.x = @model.playerShip.x + tetherWidth
-        else if @model.playerShip.x > @sectorOffset.x
-            @sectorOffset.x += Math.min c.tether.speed, @model.playerShip.x - @sectorOffset.x
-        else if @model.playerShip.x < @sectorOffset.x
-            @sectorOffset.x -= Math.min c.tether.speed, @sectorOffset.x - @model.playerShip.x
+        if not @sectorOffset
+            @sectorOffset = new Victor @model.playerShip.x, @model.playerShip.y
 
-        tetherHeight = c.canvas.height * c.tether.max
-        if @model.playerShip.y > @sectorOffset.y + tetherHeight
-            @sectorOffset.y = @model.playerShip.y - tetherHeight
-        else if @model.playerShip.y < @sectorOffset.y - tetherHeight
-            @sectorOffset.y = @model.playerShip.y + tetherHeight
-        else if @model.playerShip.y > @sectorOffset.y
-            @sectorOffset.y += Math.min c.tether.speed, @model.playerShip.y - @sectorOffset.y
-        else if @model.playerShip.y < @sectorOffset.y
-            @sectorOffset.y -= Math.min c.tether.speed, @sectorOffset.y - @model.playerShip.y
+        if not @model.playerShip.orbit?
+            @orbitRadius = null
+
+            tetherWidth = c.canvas.width * c.tether.max
+            if @model.playerShip.x > @sectorOffset.x + tetherWidth
+                @sectorOffset.x = @model.playerShip.x - tetherWidth
+            else if @model.playerShip.x < @sectorOffset.x - tetherWidth
+                @sectorOffset.x = @model.playerShip.x + tetherWidth
+            else if @model.playerShip.x > @sectorOffset.x
+                @sectorOffset.x += Math.min c.tether.speed, @model.playerShip.x - @sectorOffset.x
+            else if @model.playerShip.x < @sectorOffset.x
+                @sectorOffset.x -= Math.min c.tether.speed, @sectorOffset.x - @model.playerShip.x
+
+            tetherHeight = c.canvas.height * c.tether.max
+            if @model.playerShip.y > @sectorOffset.y + tetherHeight
+                @sectorOffset.y = @model.playerShip.y - tetherHeight
+            else if @model.playerShip.y < @sectorOffset.y - tetherHeight
+                @sectorOffset.y = @model.playerShip.y + tetherHeight
+            else if @model.playerShip.y > @sectorOffset.y
+                @sectorOffset.y += Math.min c.tether.speed, @model.playerShip.y - @sectorOffset.y
+            else if @model.playerShip.y < @sectorOffset.y
+                @sectorOffset.y -= Math.min c.tether.speed, @sectorOffset.y - @model.playerShip.y
+        else
+            planet = @model.playerShip.orbit.planet
+            planetPosition = new Victor planet.x, planet.y
+            fromPlanet = @sectorOffset.clone().subtract planetPosition
+
+            if not @orbitRadius?
+                @orbitRadius = fromPlanet.length()
+
+            if @orbitRadius is 0
+                @sectorOffset = planetPosition
+            else
+                @orbitRadius = Math.max 0, @orbitRadius - c.tether.speed
+                fromPlanet.normalize().multiplyScalar @orbitRadius
+                @sectorOffset = planetPosition.add fromPlanet
 
         @cameraLayer.attr 'transform', "translate(#{-@sectorOffset.x}, #{-@sectorOffset.y})"
 
     _refreshPlanetMarkers: ->
+        return unless @sectorOffset
+
         viewport = Rectangle.atCenter @sectorOffset.x, @sectorOffset.y, c.canvas.width, c.canvas.height
         sectorOffset = @sectorOffset
 
