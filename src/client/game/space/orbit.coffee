@@ -30,12 +30,16 @@ module.exports = class Orbit
 
     @canCapture: (planet, ship)->
         return false if ship.isThrusting
-        return false if ship.velocity.lengthSq() > c.orbit.maxCaptureSpeedSq
+
+        relativeVelocity = planet.velocity.clone().subtract(ship.velocity)
+        return false if relativeVelocity.lengthSq() > c.orbit.maxCaptureSpeedSq
+
         return false if Orbit.computeDistance(planet, ship) > planet.radius * c.orbit.distanceRatio
+
         return true
 
     @computeDistance: (planet, ship)->
-        return Math.abs new Victor(planet.x, planet.y).subtract(new Victor(ship.x, ship.y)).length()
+        return Math.abs planet.absolutePosition.subtract(new Victor(ship.x, ship.y)).length()
 
     @isValid: (planet, ship)->
         return false if ship.isThrusting
@@ -50,9 +54,10 @@ module.exports = class Orbit
     onGameStep: ->
         @_angleDeg += @_speed
         position = new Victor(@radius).rotateToDeg(@_angleDeg)
+        shipPosition = @planet.absolutePosition.add position
 
-        @ship.x       = @planet.x + position.x
-        @ship.y       = @planet.y + position.y
+        @ship.x       = shipPosition.x
+        @ship.y       = shipPosition.y
         @ship.heading = new Victor(1, 0).rotateToDeg(@_angleDeg + 90)
 
     # Property Methods #############################################################################
@@ -70,7 +75,8 @@ module.exports = class Orbit
     # Private Methods ##############################################################################
 
     _computeInitialCoordinates: ->
-        toShip           = new Victor(@ship.x, @ship.y).subtract new Victor(@planet.x, @planet.y)
+        planetPosition   = @planet.absolutePosition
+        toShip           = new Victor(@ship.x, @ship.y).subtract planetPosition
         relativeVelocity = @ship.velocity.clone().subtract @planet.velocity
         orbitalSpeed     = relativeVelocity.length() * 360 / 2 * π * @radius
 

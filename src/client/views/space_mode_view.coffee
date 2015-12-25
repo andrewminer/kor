@@ -80,8 +80,7 @@ module.exports = class SpaceModeView extends View
             else if @model.playerShip.y < @sectorOffset.y
                 @sectorOffset.y -= Math.min c.tether.speed, @sectorOffset.y - @model.playerShip.y
         else
-            planet = @model.playerShip.orbit.planet
-            planetPosition = new Victor planet.x, planet.y
+            planetPosition = @model.playerShip.orbit.planet.absolutePosition
             fromPlanet = @sectorOffset.clone().subtract planetPosition
 
             if not @orbitRadius?

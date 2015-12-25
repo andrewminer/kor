@@ -44,6 +44,13 @@ module.exports = class Planet extends Entity
 
     Object.defineProperties @prototype,
 
+        absolutePosition:
+            get: ->
+                if not @orbiting?
+                    return new Victor @x, @y
+                else
+                    return @orbiting.absolutePosition.add new Victor @x, @y
+
         key:
             get: -> return @name
 
@@ -99,4 +106,6 @@ module.exports = class Planet extends Entity
         @planets = []
         if data.planets?
             for planetData in data.planets
-                @planets.push new Planet planetData
+                planet = new Planet planetData
+                planet.orbiting = this
+                @planets.push planet
