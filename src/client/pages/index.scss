@@ -20,10 +20,15 @@ html {
 
         .game-screen {
             display: flex;
+            position: relative;
 
             flex: 1 1 100%;
             align-items: center;
             justify-content: center;
+
+            svg {
+                position: absolute;
+            }
         }
     }
 }

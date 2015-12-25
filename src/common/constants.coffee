@@ -73,3 +73,24 @@ exports.transition.hide       = 'hide'
 exports.transition.openDoors  = 'openDoors'
 exports.transition.closeDoors = 'closeDoors'
 exports.transition.show       = 'show'
+
+exports.readCanvas = ($canvas)->
+    availableWidth = $canvas.parent().width()
+    availableHeight = $canvas.parent().height()
+
+    if availableWidth >= availableHeight
+        height = availableHeight
+        width  = availableHeight * exports.canvas.width / exports.canvas.height
+        top    = 0
+        left   = Math.floor (availableWidth - width) / 2
+    else
+        width  = availableWidth
+        height = availableWidth * exports.canvas.height / exports.canvas.width
+        top    = Math.floor (availableHeight - height) / 2
+        left   = 0
+
+    $canvas.css top:"#{top}px", left:"#{left}px", width:"#{width}px", height:"#{height}px"
+    exports.canvas.width = width
+    exports.canvas.height = height
+    exports.tile.width = width / exports.room.width
+    exports.tile.height = height / exports.room.height

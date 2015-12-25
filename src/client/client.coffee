@@ -26,8 +26,10 @@ Game     = require './game/game'
 GameView = require './views/game_view'
 
 root = d3.select('.game-screen').append 'svg'
-    .attr 'width', c.canvas.width
-    .attr 'height', c.canvas.height
+c.readCanvas $('.game-screen svg')
+
+scales = require './views/scales'
+scales.computeScales()
 
 global.game = new Game
 game.view = new GameView root, game
