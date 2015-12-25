@@ -5,10 +5,6 @@
 
 View = require './view'
 
-########################################################################################################################
-
-OPEN = 0
-CLOSED = c.canvas.width / 2
 
 ########################################################################################################################
 
@@ -20,7 +16,7 @@ module.exports = class TransitionView extends View
         barnDoors = @barnDoors
         w.promise (resolve, reject)=>
             barnDoors
-                .attr 'width', CLOSED
+                .attr 'width', c.canvas.width / 2
                 .style 'opacity', c.opacity.shown
 
             d3.transition()
@@ -33,7 +29,7 @@ module.exports = class TransitionView extends View
         barnDoors = @barnDoors
         w.promise (resolve, reject)=>
             barnDoors
-                .attr 'width', CLOSED
+                .attr 'width', c.canvas.width / 2
                 .style 'opacity', c.opacity.hidden
 
             d3.transition()
@@ -45,7 +41,7 @@ module.exports = class TransitionView extends View
     hide: ->
         @barnDoors
             .style 'opacity', c.opacity.hidden
-            .attr 'width', CLOSED
+            .attr 'width', c.canvas.width / 2
         return w(true)
 
     openDoors: ->
@@ -53,19 +49,19 @@ module.exports = class TransitionView extends View
         w.promise (resolve, reject)->
             barnDoors
                 .style 'opacity', c.opacity.shown
-                .attr 'width', CLOSED
+                .attr 'width', c.canvas.width / 2
 
             d3.transition()
                 .duration c.speed.slow
                 .each ->
-                    barnDoors.transition().attr 'width', OPEN
+                    barnDoors.transition().attr 'width', 0
                 .each 'end', ->
                     resolve()
 
     show: ->
         @barnDoors
             .style 'opacity', c.opacity.shown
-            .attr 'width', CLOSED
+            .attr 'width', c.canvas.width / 2
         return w(true)
 
     closeDoors: ->
@@ -73,12 +69,12 @@ module.exports = class TransitionView extends View
         w.promise (resolve, reject)->
             barnDoors
                 .style 'opacity', c.opacity.shown
-                .attr 'width', OPEN
+                .attr 'width', 0
 
             d3.transition()
                 .duration c.speed.slow
                 .each ->
-                    barnDoors.transition().attr 'width', CLOSED
+                    barnDoors.transition().attr 'width', c.canvas.width / 2
                 .each 'end', -> resolve()
 
     # View Overrides ###############################################################################
@@ -86,21 +82,29 @@ module.exports = class TransitionView extends View
     render: ->
         view = this
 
-        boxes = @root.selectAll('.barn-door').data(['left', 'right'])
-        boxes.enter().append 'g'
+        @doorBoxes = @root.selectAll('.door-box').data(['left', 'right'])
+        @doorBoxes.enter().append 'g'
+            .attr 'class', 'door-box'
             .each (side)->
                 box = d3.select this
-                box.attr 'transform', ->
-                    return "" if side is 'left'
-                    return "translate(#{c.canvas.width},0) scale(-1, 1)" if side is 'right'
                 box.append 'rect'
                     .attr 'class', 'barn-door'
-                    .attr 'height', c.canvas.height
-                    .attr 'width', CLOSED
                     .attr 'x', 0
                     .attr 'y', 0
                     .style 'fill', 'black'
                     .style 'opacity', c.opacity.shown
 
-        @barnDoors = @root.selectAll('.barn-door')
+        @barnDoors = @root.selectAll '.barn-door'
+        super
+
+    refresh: ->
+        @doorBoxes
+            .each (side)->
+                box = d3.select this
+                box.attr 'transform', ->
+                    return "" if side is 'left'
+                    return "translate(#{c.canvas.width},0) scale(-1, 1)" if side is 'right'
+                d3.selectAll 'rect'
+                    .attr 'height', c.canvas.height
+                    .attr 'width', c.canvas.width / 2
         super

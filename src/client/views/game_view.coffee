@@ -43,7 +43,7 @@ module.exports = class GameView extends View
                 modeViews[gameMode.name] = view
 
         @transitionLayer = @root.append('g').attr('class', 'transition-layer')
-        @transitionView  = new TransitionView @transitionLayer
+        @transitionView  = @addChild new TransitionView @transitionLayer
         @transitionView.render()
 
         super
