@@ -78,6 +78,17 @@ module.exports = (grunt)->
                 files:
                     './dist/static/main.css': ['./src/client/styles/main.scss']
 
+        uglify:
+            scripts:
+                options:
+                    maxLineLen: 20
+                files: [
+                    expand: true
+                    cwd: './dist/static'
+                    src: '**/*.js'
+                    dest: './dist/static'
+                ]
+
         watch:
             assets:
                 files: ['./src/assets/**/*']
@@ -131,7 +142,7 @@ module.exports = (grunt)->
 
     grunt.registerTask 'build', ['jade', 'copy', 'sass', 'browserify:internal', 'browserify:external']
 
-    grunt.registerTask 'deploy', ['clean', 'build', 's3:upload']
+    grunt.registerTask 'deploy', ['clean', 'build', 'uglify', 's3:upload']
 
     grunt.registerTask 's3:upload', 'uploads all static content to S3', ->
       done = this.async()

@@ -54,7 +54,7 @@ module.exports = class Room
         direction = null
         promise   = w(true)
 
-        if entity.constructor.name is 'Player'
+        if entity.type is 'player'
             if entity.y < 1             then direction = c.direction.north; entity.y = 1
             if entity.y > c.room.height then direction = c.direction.south; entity.y = c.room.height
             if entity.x < 1             then direction = c.direction.west; entity.x = 1

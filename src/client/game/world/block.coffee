@@ -13,7 +13,7 @@ module.exports = class Block extends Entity
         super x, y
 
     onCollisionWith: (entity)->
-        if entity.constructor.name is 'Player'
+        if entity.type is 'player'
             if entity.facing is c.direction.east  then entity.x -= (entity.area.right - @area.left)
             if entity.facing is c.direction.north then entity.y += (@area.bottom - entity.area.top)
             if entity.facing is c.direction.south then entity.y -= (entity.area.bottom - @area.top)

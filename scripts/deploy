@@ -11,20 +11,18 @@ SITE="kor-app.com"
 TARGET_DIR="s3://$SITE/"
 
 S3CMD_CFG="$HOME/.s3cfg"
-if [[ ! -e "$S3CMD_CFG" ]]; then
-    echo "[default]" > "$S3CMD_CFG"
-    cat $AWS_CONFIG_FILE | grep "aws_access_key_id" | sed "s/aws_access_key_id/access_key/" >> "$S3CMD_CFG"
-    cat $AWS_CONFIG_FILE | grep "aws_secret_access_key" | sed "s/aws_secret_access_key/secret_key/" >> "$S3CMD_CFG"
-fi
+echo "[default]" > "$S3CMD_CFG"
+cat $AWS_CONFIG_FILE | grep "aws_access_key_id" | sed "s/aws_access_key_id/access_key/" >> "$S3CMD_CFG"
+cat $AWS_CONFIG_FILE | grep "aws_secret_access_key" | sed "s/aws_secret_access_key/secret_key/" >> "$S3CMD_CFG"
 
-HEADERS='--add-header=cache-control:max-age=1800'
-CMD='sync'
+HEADERS="--add-header=cache-control:max-age=1800"
+CMD="sync $SOURCE_DIR $TARGET_DIR -r -P $HEADERS --exclude='*'"
 
 echo "Preparing to upload to S3..."
-s3cmd $CMD $SOURCE_DIR $TARGET_DIR -r -P $HEADERS -m 'text/html; charset=utf8'       --exclude='*' --include="*.html"
-s3cmd $CMD $SOURCE_DIR $TARGET_DIR -r -P $HEADERS -m 'text/javascript; charset=utf8' --exclude='*' --include="*.js"
-s3cmd $CMD $SOURCE_DIR $TARGET_DIR -r -P $HEADERS -m 'text/css; charset=utf8'        --exclude='*' --include="*.css"
-s3cmd $CMD $SOURCE_DIR $TARGET_DIR -r -P $HEADERS -m 'image/png'                     --exclude='*' --include="*.png"
-s3cmd $CMD $SOURCE_DIR $TARGET_DIR -r -P $HEADERS -m 'audio/mpeg3'                   --exclude='*' --include="*.mp3"
-s3cmd $CMD $SOURCE_DIR $TARGET_DIR -r -P $HEADERS -m 'application/json'              --exclude='*' --include="*.json"
+s3cmd $CMD -m 'text/html; charset=utf8'       --include="*.html"
+s3cmd $CMD -m 'text/javascript; charset=utf8' --include="*.js"
+s3cmd $CMD -m 'text/css; charset=utf8'        --include="*.css"
+s3cmd $CMD -m 'image/png'                     --include="*.png"
+s3cmd $CMD -m 'audio/mpeg3'                   --include="*.mp3"
+s3cmd $CMD -m 'application/json'              --include="*.json"
 echo "S3 Upload Complete"
