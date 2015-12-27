@@ -131,6 +131,13 @@ module.exports = (grunt)->
 
     grunt.registerTask 'build', ['jade', 'copy', 'sass', 'browserify:internal', 'browserify:external']
 
+    grunt.registerTask 'deploy', ['clean', 'build', 's3:upload']
+
+    grunt.registerTask 's3:upload', 'uploads all static content to S3', ->
+      done = this.async()
+      grunt.util.spawn cmd:'./scripts/deploy', opts:{stdio:'inherit'}, -> done()
+
     grunt.registerTask 'start', "Start the server at port 8080", ->
       done = this.async()
       grunt.util.spawn cmd:'./scripts/start', opts:{stdio:'inherit'}, -> done()
+
