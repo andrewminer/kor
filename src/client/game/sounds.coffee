@@ -25,8 +25,6 @@ module.exports = class SoundPlayer
         @_muted = true
 
     startLoop: (name)->
-        return
-
         sound = @_loops[name]
         if not sound?
             console.error "unknown sound loop: #{name}"

@@ -4,6 +4,7 @@
 #
 
 GameModeRegistry = require '../game_mode_registry'
+HudView          = require './hud_view'
 StarfieldView    = require './starfield_view'
 TransitionView   = require './transition_view'
 View             = require './view'
@@ -46,6 +47,10 @@ module.exports = class GameView extends View
         @transitionView  = @addChild new TransitionView @transitionLayer
         @transitionView.render()
 
+        @hudLayer = @root.append('g').attr('class', 'hud-layer')
+        @hudView = @addChild new HudView @hudLayer, @model
+        @hudView.render()
+
         super
 
     refresh: ->
@@ -72,6 +77,7 @@ module.exports = class GameView extends View
 
                 promises.push promise
 
+        super
         return w.all promises
 
     # Private Methods ##############################################################################
