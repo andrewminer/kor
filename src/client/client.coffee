@@ -24,11 +24,10 @@ global.Backbone.$ = $
 
 Game     = require './game/game'
 GameView = require './views/game_view'
+scales   = require './views/scales'
 
 root = d3.select('.game-screen').append 'svg'
 c.readCanvas $('.game-screen svg')
-
-scales = require './views/scales'
 scales.computeScales()
 
 global.game = new Game

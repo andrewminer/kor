@@ -83,10 +83,3 @@ module.exports = class Orbit
         @radius         = Math.abs toShip.length()
         @_angleDeg       = toShip.angleDeg()
         @_speed          = Math.max c.orbit.minSpeed, Math.min c.orbit.maxSpeed, orbitalSpeed
-        console.log "
-            toShip: #{toShip},
-            radius: #{@radius},
-            angle: #{@_angleDeg},
-            velocity: #{@ship.velocity.length()}
-            speed: #{@_speed}
-        "

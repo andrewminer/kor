@@ -48,8 +48,6 @@ module.exports = class SpaceMode extends GameMode
     # Private Methods ##############################################################################
 
     _returnToShip: ->
-        game.pushTransition('fadeOut', 'fadeIn').begin
-            .then -> game.changeGameMode 'world'
-            .catch (e)-> console.error "#{e.stack}"
-
+        game.pushTransition 'fadeOut', 'fadeIn'
+        game.changeGameMode 'world'
         return w(true)

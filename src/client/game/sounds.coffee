@@ -12,11 +12,16 @@ module.exports = class SoundPlayer
 
     constructor: ->
         @_loops =
+            nature_ambiance: new Howl
+                urls: [ '/sounds/nature_ambiance.mp3' ]
+                loop: true
+                volume: 0.25
             rocket_thrusters: new Howl
                 urls: [ '/sounds/rocket_thrusters.mp3' ]
                 loop: true
                 volume: 0.25
-        @_muted = false
+
+        @mute()
 
     # Public Methods ###############################################################################
 

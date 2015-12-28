@@ -24,10 +24,12 @@ module.exports = class WorldView extends View
 
     # View Overrides ###############################################################################
 
-    render: ->
-        @roomLayer       = @root.append('g').attr('class', 'room-layer')
-        @playerLayer     = @root.append('g').attr('class', 'player-layer')
+    onModelChanged: (oldModel, newModel)->
+        @lastPosition = null
 
+    render: ->
+        @roomLayer   = @root.append('g').attr('class', 'room-layer')
+        @playerLayer = @root.append('g').attr('class', 'player-layer')
         super
 
     refresh: ->
@@ -42,9 +44,6 @@ module.exports = class WorldView extends View
                 @_refreshLayers()
                 @_refreshRooms()
                 @_refreshPlayer()
-
-    _onModelChanged: (oldModel, newModel)->
-        @lastPosition = null
 
     # Private Methods ##############################################################################
 
@@ -66,7 +65,9 @@ module.exports = class WorldView extends View
                         .attr 'transform', "translate(#{offset.x},#{offset.y})"
 
                     @_refreshLayers animated:true
-                .each 'end', =>
+                .each 'interrupt', ->
+                    resolve()
+                .each 'end', ->
                     resolve()
 
     _refreshLayers: (animated=false)->

@@ -33,6 +33,7 @@ module.exports = class Entity
     # Public Methods ###############################################################################
 
     stepAnimation: ->
+        @step ?= 0
         @ticks++
         if @ticks is @ticksPerStep
             @ticks = 0

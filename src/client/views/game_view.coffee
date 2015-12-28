@@ -54,31 +54,22 @@ module.exports = class GameView extends View
         super
 
     refresh: ->
-        promises = [@_refreshModeView()]
+        promise = w(true)
 
-        while true
-            promise    = w(true)
-            transition = @model.popTransition()
-            break unless transition?
+        transition = @model.popTransition()
+        if transition
+            if _.isFunction @transitionView[transition.begin]
+                promise = promise.then => @transitionView[transition.begin]()
 
-            do (transition)=>
-                if _.isFunction @transitionView[transition.begin?.name]
-                    promise = promise
-                        .then => @transitionView[transition.begin.name]()
-                        .then => transition.begin.resolve(true)
+            promise = promise.then => @_refreshModeView()
+            promise = promise.then => super
 
-                promise = promise.then => @_refreshModeView()
-                didRefresh = true
+            if _.isFunction @transitionView[transition.end]
+                promise = promise.then => @transitionView[transition.end]()
+        else
+            promise = promise.then => @_refreshModeView()
 
-                if _.isFunction @transitionView[transition.end?.name]
-                    promise = promise
-                        .then => @transitionView[transition.end.name]()
-                        .then => transition.end.resolve(true)
-
-                promises.push promise
-
-        super
-        return w.all promises
+        return promise
 
     # Private Methods ##############################################################################
 
@@ -94,6 +85,6 @@ module.exports = class GameView extends View
 
         if currentMode?
             view = @_modeViews[currentMode.name]
-            if view? then promise = view.refresh()
+            if view? then promise = promise.then -> view.refresh()
 
         return promise

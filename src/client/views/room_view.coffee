@@ -39,7 +39,8 @@ module.exports = class RoomView extends View
 
         background
             .style 'fill', (backgroundColor)-> backgroundColor
-            .attr('x', 0).attr('y', 0).attr('width', c.canvas.width).attr('height', c.canvas.height)
+            .attr 'width', c.canvas.width
+            .attr 'height', c.canvas.height
 
         background.exit().remove()
 
@@ -85,7 +86,7 @@ module.exports = class RoomView extends View
         tileViews = @tileLayer.selectAll('.tile').data(@model.tiles)
         tileViews.enter().append 'image'
             .attr 'class', 'tile'
-            .attr 'xlink:href', (tile)-> "images/entities/#{tile.type}.png"
+            .attr 'xlink:href', (tile)-> "images/tiles/#{tile.type}.png"
             .attr('x', (tile)-> Scales.room.x(tile.x)).attr('y', (tile)-> Scales.room.y(tile.y))
             .attr('height', c.tile.height).attr('width', c.tile.width)
             .attr 'transform', "translate(#{-c.tile.width / 2}, #{-c.tile.height / 2})"

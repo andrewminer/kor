@@ -59,20 +59,9 @@ module.exports = class Game
 
     pushTransition: (begin, end)->
         if not @_transition?
-            if begin?
-                beginData      = w.defer()
-                beginData.name = begin
+            @_transition = begin:begin, end:end
 
-            if end?
-                endData        = w.defer()
-                endData.name   = end
-
-            @_transition = begin:beginData, end:endData
-
-        result = begin:@_transition?.begin?.promise, end:@_transition?.end?.promise
-        result.begin ?= w(true)
-        result.end ?= w(true)
-        return result
+        return this
 
     popTransition: ->
         result = @_transition
@@ -148,8 +137,9 @@ module.exports = class Game
             .catch (e)=> console.error "error during game step: #{e.stack}"
 
             .then => @view.refresh()
-            .timeout 1111
-            .catch (e)=> console.error "error during view refresh: #{e.stack}"
+            # .timeout 1111
+            .catch (e)=>
+                console.error "error during view refresh: #{e.stack}"
 
             .delay c.animation.frameDuration - (Date.now() - start)
             .done => @_onGameStep()

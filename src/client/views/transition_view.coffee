@@ -23,11 +23,12 @@ module.exports = class TransitionView extends View
                 .duration c.speed.normal
                 .each ->
                     barnDoors.transition().style 'opacity', c.opacity.hidden
-                .each 'end', -> resolve()
+                .each 'end', ->
+                    resolve()
 
     fadeOut: ->
         barnDoors = @barnDoors
-        w.promise (resolve, reject)=>
+        w.promise (resolve, reject)->
             barnDoors
                 .attr 'width', c.canvas.width / 2
                 .style 'opacity', c.opacity.hidden
@@ -36,7 +37,8 @@ module.exports = class TransitionView extends View
                 .duration c.speed.normal
                 .each ->
                     barnDoors.transition().style 'opacity', c.opacity.shown
-                .each 'end', -> resolve()
+                .each 'end', ->
+                    resolve()
 
     hide: ->
         @barnDoors
@@ -75,7 +77,8 @@ module.exports = class TransitionView extends View
                 .duration c.speed.slow
                 .each ->
                     barnDoors.transition().attr 'width', c.canvas.width / 2
-                .each 'end', -> resolve()
+                .each 'end', ->
+                    resolve()
 
     # View Overrides ###############################################################################
 
@@ -89,8 +92,8 @@ module.exports = class TransitionView extends View
                 box = d3.select this
                 box.append 'rect'
                     .attr 'class', 'barn-door'
-                    .attr 'x', 0
-                    .attr 'y', 0
+                    .attr 'height', c.canvas.height
+                    .attr 'width', c.canvas.width / 2
                     .style 'fill', 'black'
                     .style 'opacity', c.opacity.shown
 
@@ -104,7 +107,4 @@ module.exports = class TransitionView extends View
                 box.attr 'transform', ->
                     return "" if side is 'left'
                     return "translate(#{c.canvas.width},0) scale(-1, 1)" if side is 'right'
-                d3.selectAll 'rect'
-                    .attr 'height', c.canvas.height
-                    .attr 'width', c.canvas.width / 2
         super

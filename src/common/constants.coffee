@@ -29,6 +29,10 @@ exports.event.game.pause  = 'game:pause'
 exports.event.game.resume = 'game:resume'
 exports.event.game.end    = 'game:end'
 
+exports.gameMode       = {}
+exports.gameMode.space = 'space'
+exports.gameMode.world = 'world'
+
 exports.orbit                   = {}
 exports.orbit.distanceRatio     = 4
 exports.orbit.maxCaptureSpeedSq = 3 * 3
@@ -57,6 +61,10 @@ exports.speed.slow   = 1000
 exports.speed.normal = exports.speed.slow / 2
 exports.speed.fast   = exports.speed.normal / 2
 exports.speed.block  = 75
+
+exports.teleportTarget        = {}
+exports.teleportTarget.planet = 'planet'
+exports.teleportTarget.ship   = 'ship'
 
 exports.tether       = {}
 exports.tether.max   = 0.33

@@ -20,27 +20,21 @@ module.exports = class World
         @player       = null
         @room         = null
         @roomCache    = {}
-        @roomPath     = []
         @x            = 0
         @y            = 0
 
     # Public Methods ###############################################################################
 
     enter: (player, spawn)->
-        @player    = player
-        @roomCache = {}
-        @roomPath  = []
-        @worldX    = 0
-        @worldY    = 0
+        @player = player
 
         @load().then =>
             if @ambientSound?
                 game.sounds.startLoop @ambientSound
 
-            @room = new Room this, @x, @y
-
-            @roomCache[@room.key] = @room
-            @roomPath.push @room
+            if not @room?
+                @room = new Room this, @x, @y
+                @roomCache[@room.key] = @room
 
             @room.load().then =>
                 @room.spawn = spawn if spawn?
@@ -82,7 +76,6 @@ module.exports = class World
 
                 nextRoom.spawn = spawn
                 nextRoom.enter @player
-                @roomPath.push nextRoom
                 @room = nextRoom
             .catch (e)->
                 console.error "failed to enter next room"

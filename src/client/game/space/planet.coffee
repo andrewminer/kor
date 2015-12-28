@@ -37,7 +37,6 @@ module.exports = class Planet extends Entity
         return unless Orbit.canCapture this, ship
         return if @_isOrbiting ship
 
-        console.log "creating orbit around #{@name}"
         @orbitingShips.push new Orbit this, ship
 
     # Property Methods #############################################################################
@@ -94,14 +93,15 @@ module.exports = class Planet extends Entity
         @y = position.y
 
     _unpackData: (data)->
-        @name       = data.name
-        @image      = data.image
-        @angle      = if data.angle? then parseFloat(data.angle) else Math.random() * 360.0
-        @mass       = c.space.massRatio * parseFloat data.mass
-        @orbit      = c.space.orbitRatio * parseFloat data.orbit
-        @shipsOrbit = !! if data.shipsOrbit? then data.shipsOrbit else true
-        @radius     = c.space.radiusRatio * parseFloat data.radius
-        @speed      = c.space.speedRatio * parseFloat data.speed
+        @canTeleport = !! data.canTeleport
+        @name        = data.name
+        @image       = data.image
+        @angle       = if data.angle? then parseFloat(data.angle) else Math.random() * 360.0
+        @mass        = c.space.massRatio * parseFloat data.mass
+        @orbit       = c.space.orbitRatio * parseFloat data.orbit
+        @shipsOrbit  = !! if data.shipsOrbit? then data.shipsOrbit else true
+        @radius      = c.space.radiusRatio * parseFloat data.radius
+        @speed       = c.space.speedRatio * parseFloat data.speed
 
         @planets = []
         if data.planets?

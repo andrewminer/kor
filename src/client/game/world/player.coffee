@@ -28,6 +28,13 @@ module.exports = class Player extends Entity
     onEnteredRoom: (newRoom)->
         @room = newRoom
 
+    stepBack: ->
+        switch @facing
+            when c.direction.north then @y += 1
+            when c.direction.east  then @x -= 1
+            when c.direction.south then @y -= 1
+            when c.direction.west  then @x += 1
+
     # Property Methods #############################################################################
 
     Object.defineProperties @prototype,

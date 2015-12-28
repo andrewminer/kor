@@ -29,7 +29,7 @@ module.exports = class Room
     # Public Methods ###############################################################################
 
     load: ->
-        if @data? then return w(this)
+        return w(this) if @data?
 
         w.promise (resolve, reject)=>
             d3.json "data/world/#{@world.name}/#{@x},#{@y}.json", (error, data)=>
@@ -105,8 +105,8 @@ module.exports = class Room
         return unless data.entities?
 
         for entityData in data.entities
-            entityData.x = parseInt entityData.x
-            entityData.y = parseInt entityData.y
+            entityData.x = parseFloat entityData.x
+            entityData.y = parseFloat entityData.y
             @entities.push @_createEntity entityData
 
     _unpackExits: (data)->

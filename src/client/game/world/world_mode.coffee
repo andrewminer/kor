@@ -23,11 +23,17 @@ module.exports = class WorldMode extends GameMode
         worldData = @_worldStack.pop()
         return unless worldData?
 
-        game.pushTransition(worldData.exit.out, worldData.exit.in).begin
+        oldWorld = @world
+        newWorld = worldData.world
+        @world   = null
+
+        newWorld.enter @_player, worldData.exit
             .then =>
-                if @world? then @world.leave @_player
-                @world = worldData.world
-                return @world.enter @_player, worldData.exit
+                game.pushTransition worldData.exit.out, worldData.exit.in
+
+                if oldWorld? then oldWorld.leave @_player
+
+                @world = newWorld
 
     pushWorld: (worldChange)->
         if not worldChange?.name? then throw new Error 'worldChange.name is required'
@@ -38,22 +44,23 @@ module.exports = class WorldMode extends GameMode
         worldChange.exit      ?= {}
         worldChange.exit.out  ?= c.transition.fadeOut
         worldChange.exit.in   ?= c.transition.fadeIn
-        worldChange.exit.x    ?= null
-        worldChange.exit.y    ?= null
+        worldChange.exit.x    ?= @_player.x
+        worldChange.exit.y    ?= @_player.y
         worldChange.x         ?= 0
         worldChange.y         ?= 0
 
-        if @world?
-            @world.leave @_player
-            @_worldStack.push world:@world, exit:worldChange.exit
+        oldWorld = @world
+        newWorld = new World this, worldChange.name
+        @world = null
 
-        @world   = new World this, worldChange.name
-        @world.x = worldChange.x
-        @world.y = worldChange.y
+        newWorld.enter @_player
+            .then =>
+                game.pushTransition worldChange.enter.out, worldChange.enter.in
 
-        @world.enter @_player
-            .then ->
-                game.pushTransition worldChange.enter.in, worldChange.enter.out
+                if oldWorld? then oldWorld.leave @_player
+
+                @world = newWorld
+                @_worldStack.push world:oldWorld, exit:worldChange.exit
 
     # GameMode Overrides ###########################################################################
 
@@ -61,7 +68,7 @@ module.exports = class WorldMode extends GameMode
         @pushWorld
             name: 'cargo-shuttle'
             enter:
-                out: c.transition.hide
+                out: c.transition.show
                 in: c.transition.openDoors
 
     enterMode: ->

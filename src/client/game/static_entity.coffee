@@ -20,6 +20,5 @@ module.exports = class StaticEntity extends Entity
 
         @type         ?= 'invisible'
         @maxStep      ?= 0
-        @step          = 0
+        @step          = null
         @ticksPerStep ?= 4
-

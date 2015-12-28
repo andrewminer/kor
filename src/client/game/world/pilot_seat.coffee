@@ -13,12 +13,9 @@ module.exports = class PilotSeat extends StaticEntity
 
     onCollisionWith: (entity)->
         return w(true) unless entity.type is 'player'
+        return unless game.gameMode.name is 'world'
 
-        game.pushTransition('fadeOut', 'fadeIn').begin
-            .then =>
-                return unless game.gameMode.name is 'world'
-
-                entity.y = @y + 1
-                game.changeGameMode 'space'
-
+        entity.stepBack()
+        game.changeGameMode 'space'
+        game.pushTransition 'fadeOut', 'fadeIn'
         return w(true)

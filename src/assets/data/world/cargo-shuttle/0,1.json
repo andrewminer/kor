@@ -17,6 +17,9 @@
         "┌": "wall-side-wn-lavender",
         "└": "wall-side-ws-lavender"
     },
+    "entities": [
+        { "type": "teleporter", "x": "8.5", "y": "6.0", "target": "planet" }
+    ],
     "plan": [
         "     ╔┎↿↾┒╗     ",
         "     ├....┤     ",
