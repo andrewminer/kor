@@ -5,7 +5,6 @@
 
 GameModeRegistry = require '../game_mode_registry'
 HudView          = require './hud_view'
-StarfieldView    = require './starfield_view'
 TransitionView   = require './transition_view'
 View             = require './view'
 WorldView        = require './world_view'
@@ -16,7 +15,7 @@ module.exports = class GameView extends View
 
     constructor: (root, model)->
         @_displayedMode   = null
-        @_modeViews      = {}
+        @_modeViews       = {}
         @_transitionLayer = null
         @_transitionView  = null
         super root, model
@@ -24,10 +23,6 @@ module.exports = class GameView extends View
     # View Overrides ###############################################################################
 
     render: ->
-        @starfieldLayer = @root.append('g').attr('class', 'starfield')
-        @starfieldView = @addChild new StarfieldView @starfieldLayer
-        @starfieldView.render()
-
         modeViews = @_modeViews
 
         @gameModeLayers = @root.selectAll('.mode-layer').data(@model.allGameModes)
@@ -61,13 +56,16 @@ module.exports = class GameView extends View
             if _.isFunction @transitionView[transition.begin]
                 promise = promise.then => @transitionView[transition.begin]()
 
-            promise = promise.then => @_refreshModeView()
-            promise = promise.then => super
+            promise = promise
+                .then => @_refreshModeView()
+                .then => super()
 
             if _.isFunction @transitionView[transition.end]
                 promise = promise.then => @transitionView[transition.end]()
         else
-            promise = promise.then => @_refreshModeView()
+            promise = promise
+                .then => @_refreshModeView()
+                .then => super()
 
         return promise
 

@@ -3,11 +3,12 @@
 # All rights reserved.
 #
 
-Rectangle  = require '../../common/rectangle'
-SectorView = require './sector_view'
-ShipView   = require './ship_view'
-Victor     = require 'victor'
-View       = require './view'
+BackgroundView = require './background_view'
+Rectangle      = require '../../common/rectangle'
+SectorView     = require './sector_view'
+ShipView       = require './ship_view'
+Victor         = require 'victor'
+View           = require './view'
 
 ########################################################################################################################
 
@@ -23,6 +24,24 @@ module.exports = class SpaceModeView extends View
 
     render: ->
         @root.attr 'transform', "translate(#{c.canvas.width / 2}, #{c.canvas.height / 2})"
+
+        @backgroundLayer = @root.append 'g'
+            .attr 'class', 'background-layer'
+            .attr 'transform', "translate(#{-c.canvas.width / 2}, #{-c.canvas.height / 2})"
+
+        @background = @addChild new BackgroundView @backgroundLayer, images: [
+            "starfield-1"
+            "starfield-2"
+            "starfield-3"
+            "starfield-4"
+            "starfield-5"
+            "starfield-6"
+            "starfield-7"
+            "starfield-8"
+            "starfield-9"
+            "starfield-10"
+        ]
+        @background.render()
 
         @cameraLayer = @root.append 'g'
             .attr 'class', 'camera-layer'

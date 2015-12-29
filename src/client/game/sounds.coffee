@@ -21,7 +21,7 @@ module.exports = class SoundPlayer
                 loop: true
                 volume: 0.25
 
-        @mute()
+        @_muted = false
 
     # Public Methods ###############################################################################
 

@@ -39,7 +39,7 @@ module.exports = class View
 
     refresh: ->
         # subclasses should implement this to perform any element enter/update/exit activity during the normal game loop
-        # and then call 'super'
+        # and then call 'super'.  Child implementations should always return a promise.
         w.all (child.refresh() for child in @children)
 
     remove: ->

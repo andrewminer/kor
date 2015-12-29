@@ -1,4 +1,18 @@
 {
+    "background": {
+        "images": [
+            "starfield-1",
+            "starfield-2",
+            "starfield-3",
+            "starfield-4",
+            "starfield-5",
+            "starfield-6",
+            "starfield-7",
+            "starfield-8",
+            "starfield-9",
+            "starfield-10"
+        ]
+    },
     "blocks": {
         "╗": "wall-corner-ne-lavender",
         "╔": "wall-corner-nw-lavender",

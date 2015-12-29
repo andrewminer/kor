@@ -3,6 +3,7 @@
 # All rights reserved.
 #
 
+BackgroundView = require './background_view'
 entityRegistry = require '../entity_registry'
 Scales         = require './scales'
 View           = require './view'
@@ -11,56 +12,33 @@ View           = require './view'
 
 module.exports = class RoomView extends View
 
+    # View Overrides ###############################################################################
+
     render: ->
         @backgroundLayer = @root.append('g').attr('class', 'background-layer')
         @tileLayer       = @root.append('g').attr('class', 'tile-layer')
         @blockLayer      = @root.append('g').attr('class', 'block-layer')
         @entityLayer     = @root.append('g').attr('class', 'entity-layer')
 
+        @_renderBackground()
+        @_renderBlocks()
+        @_renderTiles()
+
         @entityViews = {}
 
         super
 
     refresh: ->
-        @_refreshBackground()
-        @_refreshTiles()
-        @_refreshBlocks()
         @_refreshEntities()
         super
 
     # Private Methods ##############################################################################
 
-    _refreshBackground: ->
-        return unless @model.backgroundColor?
-
-        background = @backgroundLayer.selectAll('.background-rect').data([@model.backgroundColor])
-        background.enter().append 'rect'
-            .attr 'class', 'background-rect'
-
-        background
-            .style 'fill', (backgroundColor)-> backgroundColor
-            .attr 'width', c.canvas.width
-            .attr 'height', c.canvas.height
-
-        background.exit().remove()
-
-    _refreshBlocks: ->
-        blockViews = @blockLayer.selectAll('.block').data(@model.blocks)
-        blockViews.enter().append 'image'
-            .attr 'class', 'block'
-            .attr 'xlink:href', (block)-> "images/entities/#{block.type}.png"
-            .attr('x', (block)-> Scales.room.x(block.x)).attr('y', (block)-> Scales.room.y(block.y))
-            .attr('height', c.tile.height).attr('width', c.tile.width)
-            .attr 'transform', "translate(#{-c.tile.width / 2}, #{-c.tile.height / 2})"
-
-        blockViews.exit().remove()
-
     _refreshEntities: ->
         parentView = this
         model = @model
 
-        data = [].concat @model.entities, @model.backgroundEntities
-        entityBoxes = @entityLayer.selectAll('.entity').data(data, (entity)-> entity.id)
+        entityBoxes = @entityLayer.selectAll('.entity').data(@model.entities, (entity)-> entity.id)
 
         entityBoxes.enter().append 'g'
             .attr 'class', 'entity'
@@ -82,7 +60,22 @@ module.exports = class RoomView extends View
 
         entityBoxes.exit().remove()
 
-    _refreshTiles: ->
+    _renderBackground: ->
+        @background = @addChild new BackgroundView @backgroundLayer, @model.background
+        @background.render()
+
+    _renderBlocks: ->
+        blockViews = @blockLayer.selectAll('.block').data(@model.blocks)
+        blockViews.enter().append 'image'
+            .attr 'class', 'block'
+            .attr 'xlink:href', (block)-> "images/entities/#{block.type}.png"
+            .attr('x', (block)-> Scales.room.x(block.x)).attr('y', (block)-> Scales.room.y(block.y))
+            .attr('height', c.tile.height).attr('width', c.tile.width)
+            .attr 'transform', "translate(#{-c.tile.width / 2}, #{-c.tile.height / 2})"
+
+        blockViews.exit().remove()
+
+    _renderTiles: ->
         tileViews = @tileLayer.selectAll('.tile').data(@model.tiles)
         tileViews.enter().append 'image'
             .attr 'class', 'tile'

@@ -94,7 +94,8 @@ module.exports = class Planet extends Entity
 
     _unpackData: (data)->
         @canTeleport = !! data.canTeleport
-        @name        = data.name
+        @name        = data.name.toLowerCase()
+        @displayName = data.name
         @image       = data.image
         @angle       = if data.angle? then parseFloat(data.angle) else Math.random() * 360.0
         @mass        = c.space.massRatio * parseFloat data.mass

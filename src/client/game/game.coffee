@@ -137,9 +137,8 @@ module.exports = class Game
             .catch (e)=> console.error "error during game step: #{e.stack}"
 
             .then => @view.refresh()
-            # .timeout 1111
-            .catch (e)=>
-                console.error "error during view refresh: #{e.stack}"
+            .timeout 1111
+            .catch (e)=> console.error "error during view refresh: #{e.stack}"
 
             .delay c.animation.frameDuration - (Date.now() - start)
             .done => @_onGameStep()

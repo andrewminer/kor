@@ -11,15 +11,14 @@ entityRegistry = require '../../entity_registry'
 module.exports = class Room
 
     constructor: (@world, @x, @y)->
-        @blocks             = []
-        @backgroundColor    = null
-        @backgroundEntities = []
-        @data               = null
-        @exits              = []
-        @entities           = []
-        @images             = []
-        @spawn              = null
-        @tiles              = []
+        @background = {}
+        @blocks     = []
+        @data       = null
+        @exits      = []
+        @entities   = []
+        @images     = []
+        @spawn      = null
+        @tiles      = []
 
     # Class Methods ################################################################################
 
@@ -48,7 +47,8 @@ module.exports = class Room
         player.onEnteredRoom this
 
     onGameStep: ->
-        entity.onGameStep() for entity in @entities
+        for entity in @entities
+            entity.onGameStep()
 
     testCollisionWith: (entity)->
         direction = null
@@ -86,8 +86,12 @@ module.exports = class Room
         return entity
 
     _unpackBackground: (data)->
-        if data.background?.color?
-            @backgroundColor = data.background.color
+        return unless data.background?
+        if data.background.color?
+            @background.color = data.background.color
+
+        if data.background.images?.length
+            @background.images = data.background.images
 
     _unpackData: (data)->
         @data     = data
@@ -130,10 +134,6 @@ module.exports = class Room
                     if image?
                         @tiles.push new Block x+1, y+1, image
                         continue
-
-                if data.background?.entity?
-                    @backgroundEntities.push @_createEntity _.extend {}, {x:x+1, y:y+1}, data.background.entity
-                    continue
 
                 if imageId isnt ' '
                     console.error "invalid image id: \"#{imageId}\" in #{@key}"
