@@ -2,6 +2,7 @@
 .DS_Store
 .sass-cache
 .tm_properties
+build
 dist
 node_modules
 templates.js

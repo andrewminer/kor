@@ -20,34 +20,40 @@ module.exports = (grunt)->
 
     grunt.config.init
 
+        compress:
+            static:
+                options:
+                    mode: 'gzip'
+                files: [
+                    {expand: true, cwd:'./build/static', src:'**/*.css', dest:'./dist/'}
+                    {expand: true, cwd:'./build/static', src:'**/*.html', dest:'./dist/'}
+                    {expand: true, cwd:'./build/static', src:'**/*.js', dest:'./dist/'}
+                    {expand: true, cwd:'./build/static', src:'**/*.json', dest:'./dist/'}
+                ]
+
         copy:
             server_source:
                 files: [
-                    expand: true
-                    cwd:    './src/server'
-                    src:    '**/*.coffee'
-                    dest:   './dist/'
-                    ext:    '.coffee'
+                    {expand:true, cwd:'./src/server', src:'**/*.coffee', dest:'./build/', ext:'.coffee'}
                 ]
             common_source:
                 files: [
-                    expand: true
-                    cwd:    './src/common'
-                    src:    '**/*.coffee'
-                    dest:   './dist/'
-                    ext:    '.coffee'
+                    {expand:true, cwd:'./src/common', src:'**/*.coffee', dest:'./build/', ext:'.coffee'}
                 ]
-            assets:
+            assets_build:
                 files: [
-                    expand: true
-                    cwd:    './src/assets/'
-                    src:    '**/*'
-                    dest:   './dist/static/'
+                    {expand:true, cwd:'./src/assets/', src:'**/*', dest:'./build/static/'}
+                ]
+            assets_dist:
+                files: [
+                    {expand:true, cwd:'./src/assets/', src:'**/*.mp3', dest:'./dist/'}
+                    {expand:true, cwd:'./src/assets/', src:'**/*.png', dest:'./dist/'}
                 ]
 
         clean:
-            assets: ['./dist/static/data', './dist/static/images']
-            dist: ['./dist']
+            assets:    ['./build/static/data', './build/static/images']
+            build:     ['./build']
+            dist:      ['./dist']
             templates: ['./src/client/templates.js']
 
         jade:
@@ -58,7 +64,7 @@ module.exports = (grunt)->
                     expand: true
                     cwd:  './src/client/pages'
                     src:  '**/index.jade'
-                    dest: './dist/static'
+                    dest: './build/static'
                     ext:  '.html'
                 ]
             templates:
@@ -76,7 +82,7 @@ module.exports = (grunt)->
         sass:
             all:
                 files:
-                    './dist/static/main.css': ['./src/client/styles/main.scss']
+                    './build/static/main.css': ['./src/client/styles/main.scss']
 
         uglify:
             scripts:
@@ -84,9 +90,9 @@ module.exports = (grunt)->
                     maxLineLen: 20
                 files: [
                     expand: true
-                    cwd: './dist/static'
+                    cwd: './build/static'
                     src: '**/*.js'
-                    dest: './dist/static'
+                    dest: './build/static'
                 ]
 
         watch:
@@ -112,12 +118,12 @@ module.exports = (grunt)->
     grunt.registerTask 'default', ['build', 'start']
 
     grunt.registerTask 'browserify:internal', "Bundle source files needed in the browser", ->
-        grunt.file.mkdir './dist/static'
+        grunt.file.mkdir './build/static'
         done = this.async()
 
         args = [].concat ("--external=#{lib}" for lib in EXTERNAL_LIBS), [
             '--extension=.coffee'
-            '--outfile=./dist/static/internal.js'
+            '--outfile=./build/static/internal.js'
             '--transform=coffeeify'
             './src/client/client.coffee'
         ]
@@ -128,11 +134,11 @@ module.exports = (grunt)->
             done()
 
     grunt.registerTask 'browserify:external', "Bundle 3rd-party libraries used in the app", ->
-        grunt.file.mkdir './dist/static'
+        grunt.file.mkdir './build/static'
         done = this.async()
 
         args = [].concat ("--require=#{lib}" for lib in EXTERNAL_LIBS), [
-            '--outfile=./dist/static/external.js'
+            '--outfile=./build/static/external.js'
         ]
 
         options = cmd:'browserify', args:args
@@ -142,13 +148,14 @@ module.exports = (grunt)->
 
     grunt.registerTask 'build', ['jade', 'copy', 'sass', 'browserify:internal', 'browserify:external']
 
-    grunt.registerTask 'deploy', ['clean', 'build', 'uglify', 's3:upload']
+    grunt.registerTask 'deploy', ['clean', 'build', 'uglify', 'compress', 'copy:assets_dist', 'script:deploy']
 
-    grunt.registerTask 's3:upload', 'uploads all static content to S3', ->
+    grunt.registerTask 'script:deploy', 'uploads all static content to S3', ->
       done = this.async()
       grunt.util.spawn cmd:'./scripts/deploy', opts:{stdio:'inherit'}, -> done()
 
-    grunt.registerTask 'start', "Start the server at port 8080", ->
+    grunt.registerTask 'script:start', "start the server at port 8080", ->
       done = this.async()
       grunt.util.spawn cmd:'./scripts/start', opts:{stdio:'inherit'}, -> done()
 
+    grunt.registerTask 'start', ['clean', 'build', 'script:start']
