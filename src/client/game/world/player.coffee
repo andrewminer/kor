@@ -30,10 +30,10 @@ module.exports = class Player extends Entity
 
     stepBack: ->
         switch @facing
-            when c.direction.north then @y += 1
-            when c.direction.east  then @x -= 1
-            when c.direction.south then @y -= 1
-            when c.direction.west  then @x += 1
+            when c.direction.north then @y = Math.ceil @y
+            when c.direction.east  then @x = Math.floor @x
+            when c.direction.south then @y = Math.floor @y
+            when c.direction.west  then @x = Math.ceil @x
 
     # Property Methods #############################################################################
 
