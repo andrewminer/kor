@@ -148,7 +148,7 @@ module.exports = (grunt)->
 
     grunt.registerTask 'build', ['jade', 'copy', 'sass', 'browserify:internal', 'browserify:external']
 
-    grunt.registerTask 'deploy', ['clean', 'build', 'uglify', 'compress', 'copy:assets_dist', 'script:deploy']
+    grunt.registerTask 'deploy', ['build', 'uglify', 'compress', 'copy:assets_dist', 'script:deploy']
 
     grunt.registerTask 'script:deploy', 'uploads all static content to S3', ->
       done = this.async()
@@ -158,4 +158,5 @@ module.exports = (grunt)->
       done = this.async()
       grunt.util.spawn cmd:'./scripts/start', opts:{stdio:'inherit'}, -> done()
 
-    grunt.registerTask 'start', ['clean', 'build', 'script:start']
+    grunt.registerTask 'start', ['build', 'script:start']
+
