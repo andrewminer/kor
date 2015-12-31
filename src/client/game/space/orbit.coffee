@@ -75,11 +75,11 @@ module.exports = class Orbit
     # Private Methods ##############################################################################
 
     _computeInitialCoordinates: ->
-        planetPosition   = @planet.absolutePosition
-        toShip           = new Victor(@ship.x, @ship.y).subtract planetPosition
-        relativeVelocity = @ship.velocity.clone().subtract @planet.velocity
-        orbitalSpeed     = relativeVelocity.length() * 360 / 2 * π * @radius
+        planetPosition = @planet.absolutePosition
+        toShip         = new Victor(@ship.x, @ship.y).subtract planetPosition
+        @radius        = Math.abs toShip.length()
+        @_angleDeg     = toShip.angleDeg()
 
-        @radius         = Math.abs toShip.length()
-        @_angleDeg       = toShip.angleDeg()
+        relativeVelocity = @ship.velocity.clone().subtract @planet.velocity
+        orbitalSpeed     = relativeVelocity.length() * 360.0 / (2.0 * π * @radius)
         @_speed          = Math.max c.orbit.minSpeed, Math.min c.orbit.maxSpeed, orbitalSpeed
