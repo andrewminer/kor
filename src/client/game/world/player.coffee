@@ -75,6 +75,7 @@ module.exports = class Player extends Entity
             this[axis] = Math.floor current + 1
 
     _onEast: ->
+        @stepAnimation()
         @facing = c.direction.east
         @x += @speed
         @_adjustPosition 'y'
@@ -82,6 +83,7 @@ module.exports = class Player extends Entity
         return @_resolveCollisions()
 
     _onNorth: ->
+        @stepAnimation()
         @facing = c.direction.north
         @y -= @speed
         @_adjustPosition 'x'
@@ -89,6 +91,7 @@ module.exports = class Player extends Entity
         return @_resolveCollisions()
 
     _onSouth: ->
+        @stepAnimation()
         @facing = c.direction.south
         @y += @speed
         @_adjustPosition 'x'
@@ -96,6 +99,7 @@ module.exports = class Player extends Entity
         return @_resolveCollisions()
 
     _onWest: ->
+        @stepAnimation()
         @facing = c.direction.west
         @x -= @speed
         @_adjustPosition 'y'
