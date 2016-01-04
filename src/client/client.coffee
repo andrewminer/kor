@@ -22,9 +22,22 @@ global.Backbone.$ = $
 
 ########################################################################################################################
 
+connect  = require 'socket.io-client'
 Game     = require './game/game'
 GameView = require './views/game_view'
 scales   = require './views/scales'
+
+socket = connect 'http://localhost:8080', path:'/clientConnection', transports:['websocket']
+socket.emit c.io.event.message, status:'launched', message:'Hello server!'
+socket.on c.io.event.connect, ->
+    console.info "connected to server"
+socket.on c.io.event.disconnect, ->
+    console.info "disconnected from server"
+socket.on c.io.event.message, (data)->
+    console.info "server said: #{JSON.stringify(data)}"
+socket.on c.io.event.goodbye, ->
+    console.warn 'server is disconnecting'
+    # socket.disconnect()
 
 root = d3.select('.game-screen').append 'svg'
 c.readCanvas $('.game-screen svg')

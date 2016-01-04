@@ -8,6 +8,7 @@ EXTERNAL_LIBS = [
     'd3'
     'howler'
     'jquery'
+    'socket.io-client'
     'underscore'
     'underscore.inflections'
     'victor'
@@ -42,12 +43,12 @@ module.exports = (grunt)->
                 ]
             assets_build:
                 files: [
-                    {expand:true, cwd:'./src/assets/', src:'**/*', dest:'./build/static/'}
+                    {expand:true, cwd:'./assets/', src:'**/*', dest:'./build/static/'}
                 ]
             assets_dist:
                 files: [
-                    {expand:true, cwd:'./src/assets/', src:'**/*.mp3', dest:'./dist/'}
-                    {expand:true, cwd:'./src/assets/', src:'**/*.png', dest:'./dist/'}
+                    {expand:true, cwd:'./assets/', src:'**/*.mp3', dest:'./dist/'}
+                    {expand:true, cwd:'./assets/', src:'**/*.png', dest:'./dist/'}
                 ]
 
         clean:
@@ -97,7 +98,7 @@ module.exports = (grunt)->
 
         watch:
             assets:
-                files: ['./src/assets/**/*']
+                files: ['./assets/**/*']
                 tasks: ['copy:assets']
             client_source:
                 files: ['./src/{client,common}/**/*.coffee']

@@ -33,6 +33,14 @@ exports.gameMode       = {}
 exports.gameMode.space = 'space'
 exports.gameMode.world = 'world'
 
+exports.io                  = {}
+exports.io.event            = {}
+exports.io.event.connect    = 'connect'
+exports.io.event.connection = 'connection'
+exports.io.event.disconnect = 'disconnect'
+exports.io.event.goodbye    = 'goodbye'
+exports.io.event.message    = 'message'
+
 exports.orbit                   = {}
 exports.orbit.distanceRatio     = 4
 exports.orbit.maxCaptureSpeedSq = 3 * 3
@@ -48,6 +56,9 @@ exports.opacity.shown  = 1
 exports.room = {}
 exports.room.width = 16
 exports.room.height = 12
+
+exports.server             = {}
+exports.server.defaultPort = 8080
 
 exports.space             = {}
 exports.space.G           = 200
